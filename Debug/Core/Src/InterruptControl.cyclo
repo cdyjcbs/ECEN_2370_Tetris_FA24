@@ -1,0 +1,6 @@
+../Core/Src/InterruptControl.c:15:6:enableIRQ	3
+../Core/Src/InterruptControl.c:26:6:disableIRQ	3
+../Core/Src/InterruptControl.c:37:6:clearPendingIRQ	3
+../Core/Src/InterruptControl.c:48:6:setPendingIRQ	3
+../Core/Src/InterruptControl.c:59:6:clearEXTIPendingIRQ	1
+../Core/Src/InterruptControl.c:63:6:EXTI0_Enable	1
