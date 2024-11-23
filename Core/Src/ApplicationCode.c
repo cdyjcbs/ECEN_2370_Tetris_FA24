@@ -11,6 +11,7 @@
 
 
 extern void initialise_monitor_handles(void); 
+extern TIM_HandleTypeDef TIM3_Config;
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 static STMPE811_TouchData StaticTouchData;
@@ -26,7 +27,11 @@ void ApplicationInit(void)
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
+    GameInit();
     buttonIRQInit();
+    RNG_Init();
+    timer3Init();
+
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
@@ -47,12 +52,48 @@ void LCD_Visual_Demo(void)
 	visualDemo();
 }
 
+void TIM3_App_Start(){
+	TIM3_Start();
+}
+
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 //	addSchedulerEvent(ROTATE_BLOCK);
 	rotateBlock();
+//	eraseCurrentBlock();
+//	uint32_t randBlock = GetRandomBlock();
+//	uint32_t randOrientation = GetRandomOrientation();
+//	updateCurrentBlock(randBlock, 5, 5, randOrientation);
+//	drawCurrentBlock();
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+void TIM3_IRQHandler() {
+	 if (__HAL_TIM_GET_FLAG(&TIM3_Config, TIM_FLAG_UPDATE)) {
+	        // Clear the update interrupt flag
+	        __HAL_TIM_CLEAR_FLAG(&TIM3_Config, TIM_FLAG_UPDATE);
+	        int full = isFull();
+
+	        if (full != 0){
+		        eraseCurrentBlock();
+				uint16_t currentYpos = updateYpos();
+				drawCurrentBlock();
+	        }
+
+			if (full == 0){
+//				uint16_t currentYpos = getCurrentYpos();
+//				if (currentYpos > 1) {
+				uint32_t randBlock = GetRandomBlock();
+				updateCurrentBlock(randBlock, 5, 2, 1);
+				drawCurrentBlock();
+//				}
+//				if (currentYpos == 1){
+//				HAL_NVIC_DisableIRQ(TIM3_IRQn);
+//				gameOver();
+//				}
+			}
+	 }
 }
 
 

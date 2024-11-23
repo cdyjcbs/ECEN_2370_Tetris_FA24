@@ -1,0 +1,3 @@
+../Core/Src/RNG.c:12:6:RNG_Init	2
+../Core/Src/RNG.c:20:10:GetRandomBlock	1
+../Core/Src/RNG.c:27:10:GetRandomOrientation	1

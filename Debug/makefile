@@ -60,8 +60,8 @@ all: main-build
 main-build: CJacobs_Tetris.elf secondary-outputs
 
 # Tool invocations
-CJacobs_Tetris.elf CJacobs_Tetris.map: $(OBJS) $(USER_OBJS) C:\Users\codyl\STM32CubeIDE\workspace_1.16.0\ECEN_2370_Tetris_FA24\CJacobs_Tetris\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CJacobs_Tetris.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\codyl\STM32CubeIDE\workspace_1.16.0\ECEN_2370_Tetris_FA24\CJacobs_Tetris\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CJacobs_Tetris.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+CJacobs_Tetris.elf CJacobs_Tetris.map: $(OBJS) $(USER_OBJS) C:\Users\codyl\STM32CubeIDE\workspace_1.16.0\CJacobs_Tetris\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CJacobs_Tetris.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\codyl\STM32CubeIDE\workspace_1.16.0\CJacobs_Tetris\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CJacobs_Tetris.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

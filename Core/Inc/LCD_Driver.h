@@ -99,8 +99,12 @@ void eraseBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation);
 
 void rotateBlock();
 void updateCurrentBlock(uint16_t BlockNum, uint16_t Xpos, uint16_t Ypos, uint16_t Orientation);
-
-
+uint16_t updateYpos();
+int isFull();
+void drawCurrentBlock();
+void eraseCurrentBlock();
+void drawBottomBorder();
+uint16_t getCurrentYpos();
 
 
 void LCD_Error_Handler(void);

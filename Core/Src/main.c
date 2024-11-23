@@ -40,11 +40,11 @@ int main(void)
   SystemClockOverride();
 
   ApplicationInit(); // Initializes the LCD functionality
-
+  TIM3_App_Start();
 //  LCD_Visual_Demo();
-  GameInit();
+//  GameInit();
 
-  HAL_Delay(5000);
+//  HAL_Delay(100);
 //  LCD_Touch_Polling();
 
   // DO NOT CALL THIS FUNCTION WHEN INTERRUPT MODE IS SELECTED IN THE COMPILE SWITCH IN stmpe811.h
