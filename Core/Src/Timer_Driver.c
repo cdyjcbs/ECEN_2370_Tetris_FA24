@@ -25,7 +25,7 @@ void timer3Init(){
 	        while(1);
 	    }
 
-	HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
+	HAL_NVIC_SetPriority(TIM3_IRQn, 3, 0);
 	HAL_NVIC_EnableIRQ(TIM3_IRQn);
 
 //	HAL_TIM_Base_Start_IT(&TIM3_Config);

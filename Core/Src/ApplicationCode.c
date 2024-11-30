@@ -27,12 +27,12 @@ void ApplicationInit(void)
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
-//    GameInit();
+    GameInit();
 //    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-//    buttonIRQInit();
-//    RNG_Init();
+    buttonIRQInit();
+    RNG_Init();
 //    gameStart();
-//    timer3Init();
+    timer3Init();
 
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -79,8 +79,8 @@ void TIM3_IRQHandler() {
 
 	        if (full != 0){
 		        eraseCurrentBlock();
-				uint16_t currentYpos = updateYpos();
-//		        updateYpos();
+//				uint16_t currentYpos = updateYpos();
+		        updateYpos();
 				drawCurrentBlock();
 	        }
 
@@ -91,8 +91,8 @@ void TIM3_IRQHandler() {
 					gameOver();
 				}
 				if (currentYpos > 1) {
-					updateTop();
-					checkForTetris();
+//					updateTop();
+//					checkForTetris();
 					uint32_t randBlock = GetRandomBlock();
 					updateCurrentBlock(randBlock, 5, 1, 1);
 					drawCurrentBlock();
@@ -178,6 +178,7 @@ void LCDTouchScreenInterruptGPIOInit(void)
     HAL_GPIO_Init(GPIOA, &LCDConfig);
 
     // Interrupt Configuration
+    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 	LCDTouchIRQ.Line = EXTI_LINE_15;
@@ -192,6 +193,12 @@ void EXTI15_10_IRQHandler()
 {
 	HAL_NVIC_DisableIRQ(EXTI15_10_IRQn); // May consider making this a universial interrupt guard
 	bool isTouchDetected = false;
+
+	uint8_t ctrlReg = ReadRegisterFromTouchModule(STMPE811_TSC_CTRL);
+		if (ctrlReg & 0x80)
+		{
+			isTouchDetected = true;
+		}
 
 	static uint32_t count;
 	count = 0;
@@ -208,11 +215,11 @@ void EXTI15_10_IRQHandler()
 	uint8_t clearIRQData = (statusFlag | TOUCH_DETECTED_IRQ_STATUS_BIT); // Write one to clear bit
 	WriteDataToTouchModule(STMPE811_INT_STA, clearIRQData);
 	
-	uint8_t ctrlReg = ReadRegisterFromTouchModule(STMPE811_TSC_CTRL);
-	if (ctrlReg & 0x80)
-	{
-		isTouchDetected = true;
-	}
+//	uint8_t ctrlReg = ReadRegisterFromTouchModule(STMPE811_TSC_CTRL);
+//	if (ctrlReg & 0x80)
+//	{
+//		isTouchDetected = true;
+//	}
 
 	// Determine if it is pressed or unpressed
 	if(isTouchDetected) // Touch has been detected
@@ -221,14 +228,27 @@ void EXTI15_10_IRQHandler()
 		// May need to do numerous retries? 
 		DetermineTouchPosition(&StaticTouchData);
 		/* Touch valid */
-		printf("\nX: %03d\nY: %03d \n", StaticTouchData.x, StaticTouchData.y);
-		LCD_Clear(0, LCD_COLOR_RED);
+		if (StaticTouchData.x < 120) {
+//			int canMove = canMoveLeft();
+//			if (canMove == 1){
+				eraseCurrentBlock();
+				updateXpos(1);
+				drawCurrentBlock();
+//			}
+		}
+		else if (StaticTouchData.x >= 120){
+			eraseCurrentBlock();
+			updateXpos(2);
+			drawCurrentBlock();
+		}
+//		printf("\nX: %03d\nY: %03d \n", StaticTouchData.x, StaticTouchData.y);
+//		LCD_Clear(0, LCD_COLOR_RED);
 
 	}else{
 
 		/* Touch not pressed */
-		printf("\nNot pressed \n");
-		LCD_Clear(0, LCD_COLOR_GREEN);
+//		printf("\nNot pressed \n");
+//		LCD_Clear(0, LCD_COLOR_GREEN);
 	}
 
 	STMPE811_Write(STMPE811_FIFO_STA, 0x01);

@@ -54,7 +54,7 @@ void buttonIRQInit(){
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	HAL_GPIO_Init(GPIOA, &pinConfig);
 
-//	HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 

@@ -401,9 +401,9 @@ void visualDemo(void)
 
 void GameInit(void)
 {
-	uint16_t x;
-	uint16_t y;
-	uint16_t size = 10;
+//	uint16_t x;
+//	uint16_t y;
+//	uint16_t size = 10;
 
 	LCD_Clear(0,GameScreenColor);
 	LCD_SetTextColor(LCD_COLOR_WHITE);
@@ -1092,18 +1092,18 @@ void updateXpos(int dir){
 	}
 }
 
-int isBottom(){
-	uint16_t BlockNum = CurrentBlock[0];
-	uint16_t Orientation = CurrentBlock[3];
-	if (BlockNum == 1){
-
-	}
-}
+//int isBottom(){
+//	uint16_t BlockNum = CurrentBlock[0];
+//	uint16_t Orientation = CurrentBlock[3];
+//	if (BlockNum == 1){
+//
+//	}
+//}
 
 int canMoveLeft(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
-	uint16_t Ypos = CurrentBlock[2];
+//	uint16_t Ypos = CurrentBlock[2];
 	uint16_t Orientation = CurrentBlock[3];
 
 	if (BlockNum == 1){
@@ -1119,6 +1119,7 @@ int canMoveLeft(){
 		}
 		return 0;
 	}
+	return 0;
 }
 
 int isFull(){
@@ -1299,16 +1300,16 @@ void checkForTetris(){
 		}
 	}
 
-	if (count = 1){
+	if (count == 1){
 		singleLine += 1;
 	}
-	if (count = 2){
+	if (count == 2){
 		doubleLine += 1;
 	}
-	if (count = 3){
+	if (count == 3){
 		tripleLine += 1;
 	}
-	if (count = 4){
+	if (count == 4){
 		fullTetris += 1;
 	}
 }
