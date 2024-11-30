@@ -21,7 +21,6 @@ static uint16_t CurrentTextColor   = 0xFFFF;
 static uint16_t GameScreenColor = LCD_COLOR_GREY;
 
 uint16_t Obj_Color[16][12] = {0};
-int movingBlock[16][12] = {0};
 int LCD_Screen[16][12] = {0};
 int blockSize = 20;
 int topRow [12] = {0};
@@ -428,45 +427,90 @@ void GameInit(void)
 	LCD_DisplayChar(132,190,'i');
 	LCD_DisplayChar(139,190,'s');
 
-
-
+	blockSize = 10;
+	drawBlockOne(4.5,2.5,1);
 //	blockOneH(45,25,10,LCD_COLOR_CYAN);
+	drawBlockTwo(9.5,2.5,1);
 //	blockTwo(95,25,10,LCD_COLOR_BLUE);
+	drawBlockThree(13.5,2.5,1);
 //	blockThree(135,25,10,LCD_COLOR_ORANGE);
+	drawBlockFour(17.5,2.5,1);
 //	blockFour(175,25,10,LCD_COLOR_YELLOW);
+	drawBlockFive(6.5,5.5,1);
 //	blockFive(65,55,10,LCD_COLOR_GREEN);
+	drawBlockSix(11.5,5.5,1);
 //	blockSix(105,55,10,LCD_COLOR_MAGENTA);
+	drawBlockSeven(15.5,5.5,1);
 //	blockSeven(155,55,10,LCD_COLOR_RED);
-//
-//	blockOneV(45,85,10,LCD_COLOR_CYAN);
+	screenReset();
+	HAL_Delay(1000);
 
+	blockSize = 20;
 	LCD_Clear(0,GameScreenColor);
 	LCD_SetTextColor(LCD_COLOR_WHITE);
 	LCD_SetFont(&Font16x24);
-//	__disable_irq();
-	drawBottomBorder();
-//	__enable_irq();
 
-//	drawBlockSeven(5, 2, 1);
-	updateCurrentBlock(1, 5, 2, 1);
+	drawBottomBorder();
+	updateCurrentBlock(1, 4, 2, 1);
+	drawCurrentBlock();
+	HAL_Delay(100);
+}
+
+void gameStart(){
+	LCD_Clear(0,GameScreenColor);
+	LCD_SetTextColor(LCD_COLOR_WHITE);
+	LCD_SetFont(&Font16x24);
+
+	blockSize = 20;
+	drawBottomBorder();
+	updateCurrentBlock(1, 4, 2, 1);
 	drawCurrentBlock();
 	HAL_Delay(1000);
 }
 
+void screenReset(){
+	for (uint16_t i = 0; i < 16; i++){
+		for (uint16_t j = 0; j < 12; j++){
+			Obj_Color[i][j] = 0;
+			LCD_Screen[i][j] = 0;
+		}
+	}
+}
+
+
 void gameOver(){
+	while(1){
 	LCD_Clear(0,LCD_COLOR_BLACK);
+	HAL_Delay(200);
 	LCD_SetTextColor(LCD_COLOR_RED);
 	LCD_SetFont(&Font16x24);
 
-	LCD_DisplayChar(104,140,'G');
-	LCD_DisplayChar(112,140,'a');
-	LCD_DisplayChar(124,140,'m');
-	LCD_DisplayChar(140,140,'e');
+	LCD_DisplayChar(95,120,'G');
+	HAL_Delay(200);
+	LCD_DisplayChar(111,120,'a');
+	HAL_Delay(200);
+	LCD_DisplayChar(125,120,'m');
+	HAL_Delay(200);
+	LCD_DisplayChar(140,120,'e');
+	HAL_Delay(200);
 
-	LCD_DisplayChar(104,160,'O');
-	LCD_DisplayChar(112,160,'v');
-	LCD_DisplayChar(124,160,'e');
-	LCD_DisplayChar(140,160,'r');
+	LCD_DisplayChar(92,145,'O');
+	HAL_Delay(200);
+	LCD_DisplayChar(107,145,'v');
+	HAL_Delay(200);
+	LCD_DisplayChar(118,145,'e');
+	HAL_Delay(200);
+	LCD_DisplayChar(129,145,'r');
+	HAL_Delay(200);
+	LCD_DisplayChar(135,145,'!');
+	HAL_Delay(200);
+	LCD_DisplayChar(140,145,'!');
+	HAL_Delay(200);
+	LCD_DisplayChar(145,145,'!');
+
+
+	HAL_Delay(1000);
+	}
 }
 
 void drawBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
@@ -490,15 +534,15 @@ void eraseBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+4); i++){
 			LCD_Erase_Square(i, Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 	}
 	if (orientation == 2 || orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+3); i++){
 			LCD_Erase_Square(Xpos+1, i);
-			LCD_Screen[Xpos+1][i] = 0;
-			Obj_Color[Xpos+1][i] = 0;
+			LCD_Screen[i][Xpos+1] = 0;
+			Obj_Color[i][Xpos+1] = 0;
 		}
 	}
 }
@@ -507,42 +551,42 @@ void drawBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_BLUE);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_BLUE;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_BLUE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos-1,LCD_COLOR_BLUE);
-		LCD_Screen[Xpos][Ypos-1] = 1;
-		Obj_Color[Xpos][Ypos-1] = LCD_COLOR_BLUE;
+		LCD_Screen[Ypos-1][Xpos] = 1;
+		Obj_Color[Ypos-1][Xpos] = LCD_COLOR_BLUE;
 	}
 	if (orientation == 2){
 			for (int i = Ypos-1; i < (Ypos+2); i++){
 				LCD_Draw_Square_Fill_Border(Xpos+1,i,LCD_COLOR_BLUE);
-				LCD_Screen[Xpos+1][i] = 1;
-				Obj_Color[Xpos+1][i] = LCD_COLOR_BLUE;
+				LCD_Screen[i][Xpos+1] = 1;
+				Obj_Color[i][Xpos+1] = LCD_COLOR_BLUE;
 			}
 			LCD_Draw_Square_Fill_Border(Xpos+2,Ypos-1,LCD_COLOR_BLUE);
-			LCD_Screen[Xpos+2][Ypos-1] = 1;
-			Obj_Color[Xpos+2][Ypos-1] = LCD_COLOR_BLUE;
+			LCD_Screen[Ypos-1][Xpos+2] = 1;
+			Obj_Color[Ypos-1][Xpos+2] = LCD_COLOR_BLUE;
 		}
 	if (orientation == 3){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_BLUE);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_BLUE;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_BLUE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos+2,Ypos+1,LCD_COLOR_BLUE);
-		LCD_Screen[Xpos+2][Ypos+1] = 1;
-		Obj_Color[Xpos+2][Ypos+1] = LCD_COLOR_BLUE;
+		LCD_Screen[Ypos+1][Xpos+2] = 1;
+		Obj_Color[Ypos+1][Xpos+2] = LCD_COLOR_BLUE;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos+1,i,LCD_COLOR_BLUE);
-			LCD_Screen[Xpos+1][i] = 1;
-			Obj_Color[Xpos+1][i] = LCD_COLOR_BLUE;
+			LCD_Screen[i][Xpos+1] = 1;
+			Obj_Color[i][Xpos+1] = LCD_COLOR_BLUE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos+1,LCD_COLOR_BLUE);
-		LCD_Screen[Xpos][Ypos+1] = 1;
-		Obj_Color[Xpos][Ypos+1] = LCD_COLOR_BLUE;
+		LCD_Screen[Ypos+1][Xpos] = 1;
+		Obj_Color[Ypos+1][Xpos] = LCD_COLOR_BLUE;
 	}
 }
 
@@ -550,42 +594,42 @@ void eraseBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos-1);
-		LCD_Screen[Xpos][Ypos-1] = 0;
-		Obj_Color[Xpos][Ypos-1] = 0;
+		LCD_Screen[Ypos-1][Xpos] = 0;
+		Obj_Color[Ypos-1][Xpos] = 0;
 	}
 	if (orientation == 2){
 			for (int i = Ypos-1; i < (Ypos+2); i++){
 				LCD_Erase_Square(Xpos+1,i);
-				LCD_Screen[Xpos+1][i] = 0;
-				Obj_Color[Xpos+1][i] = 0;
+				LCD_Screen[i][Xpos+1] = 0;
+				Obj_Color[i][Xpos+1] = 0;
 			}
 			LCD_Erase_Square(Xpos+2,Ypos-1);
-			LCD_Screen[Xpos+2][Ypos-1] = 0;
-			Obj_Color[Xpos+2][Ypos-1] = 0;
+			LCD_Screen[Ypos-1][Xpos+2] = 0;
+			Obj_Color[Ypos-1][Xpos+2] = 0;
 		}
 	if (orientation == 3){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos+2,Ypos+1);
-		LCD_Screen[Xpos+2][Ypos+1] = 0;
-		Obj_Color[Xpos+2][Ypos+1] = 0;
+		LCD_Screen[Ypos+1][Xpos+2] = 0;
+		Obj_Color[Ypos+1][Xpos+2] = 0;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos+1,i);
-			LCD_Screen[Xpos+1][i] = 0;
-			Obj_Color[Xpos+1][i] = 0;
+			LCD_Screen[i][Xpos+1] = 0;
+			Obj_Color[i][Xpos+1] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos+1);
-		LCD_Screen[Xpos][Ypos+1] = 0;
-		Obj_Color[Xpos][Ypos+1] = 0;
+		LCD_Screen[Ypos+1][Xpos] = 0;
+		Obj_Color[Ypos+1][Xpos] = 0;
 	}
 }
 
@@ -593,42 +637,42 @@ void drawBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_ORANGE);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_ORANGE;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_ORANGE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos+2,Ypos-1,LCD_COLOR_ORANGE);
-		LCD_Screen[Xpos+2][Ypos-1] = 1;
-		Obj_Color[Xpos+2][Ypos-1] = LCD_COLOR_ORANGE;
+		LCD_Screen[Ypos-1][Xpos+2] = 1;
+		Obj_Color[Ypos-1][Xpos+2] = LCD_COLOR_ORANGE;
 	}
 	if (orientation == 2){
 			for (int i = Ypos-1; i < (Ypos+2); i++){
 				LCD_Draw_Square_Fill_Border(Xpos+1,i,LCD_COLOR_ORANGE);
-				LCD_Screen[Xpos+1][i] = 1;
-				Obj_Color[Xpos+1][i] = LCD_COLOR_ORANGE;
+				LCD_Screen[i][Xpos+1] = 1;
+				Obj_Color[i][Xpos+1] = LCD_COLOR_ORANGE;
 			}
 			LCD_Draw_Square_Fill_Border(Xpos+2,Ypos+1,LCD_COLOR_ORANGE);
-			LCD_Screen[Xpos+2][Ypos+1] = 1;
-			Obj_Color[Xpos+2][Ypos+1] = LCD_COLOR_ORANGE;
+			LCD_Screen[Ypos+1][Xpos+2] = 1;
+			Obj_Color[Ypos+1][Xpos+2] = LCD_COLOR_ORANGE;
 		}
 	if (orientation == 3){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_ORANGE);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_ORANGE;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_ORANGE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos+1,LCD_COLOR_ORANGE);
-		LCD_Screen[Xpos][Ypos+1] = 1;
-		Obj_Color[Xpos][Ypos+1] = LCD_COLOR_ORANGE;
+		LCD_Screen[Ypos+1][Xpos] = 1;
+		Obj_Color[Ypos+1][Xpos] = LCD_COLOR_ORANGE;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos+1,i,LCD_COLOR_ORANGE);
-			LCD_Screen[Xpos+1][i] = 1;
-			Obj_Color[Xpos+1][i] = LCD_COLOR_ORANGE;
+			LCD_Screen[i][Xpos+1] = 1;
+			Obj_Color[i][Xpos+1] = LCD_COLOR_ORANGE;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos-1,LCD_COLOR_ORANGE);
-		LCD_Screen[Xpos][Ypos-1] = 1;
-		Obj_Color[Xpos][Ypos-1] = LCD_COLOR_ORANGE;
+		LCD_Screen[Ypos-1][Xpos] = 1;
+		Obj_Color[Ypos-1][Xpos] = LCD_COLOR_ORANGE;
 	}
 }
 
@@ -636,64 +680,64 @@ void eraseBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos+2,Ypos-1);
-		LCD_Screen[Xpos+2][Ypos-1] = 0;
-		Obj_Color[Xpos+2][Ypos-1] = 0;
+		LCD_Screen[Ypos-1][Xpos+2] = 0;
+		Obj_Color[Ypos-1][Xpos+2] = 0;
 	}
 	if (orientation == 2){
 			for (int i = Ypos-1; i < (Ypos+2); i++){
 				LCD_Erase_Square(Xpos+1,i);
-				LCD_Screen[Xpos+1][i] = 0;
-				Obj_Color[Xpos+1][i] = 0;
+				LCD_Screen[i][Xpos+1] = 0;
+				Obj_Color[i][Xpos+1] = 0;
 			}
 			LCD_Erase_Square(Xpos+2,Ypos+1);
-			LCD_Screen[Xpos+2][Ypos+1] = 0;
-			Obj_Color[Xpos+2][Ypos+1] = 0;
+			LCD_Screen[Ypos+1][Xpos+2] = 0;
+			Obj_Color[Ypos+1][Xpos+2] = 0;
 		}
 	if (orientation == 3){
 		for (int i = Xpos; i < (Xpos+3); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos+1);
-		LCD_Screen[Xpos][Ypos+1] = 0;
-		Obj_Color[Xpos][Ypos+1] = 0;
+		LCD_Screen[Ypos+1][Xpos] = 0;
+		Obj_Color[Ypos+1][Xpos] = 0;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos+1,i);
-			LCD_Screen[Xpos+1][i] = 0;
-			Obj_Color[Xpos+1][i] = 0;
+			LCD_Screen[i][Xpos+1] = 0;
+			Obj_Color[i][Xpos+1] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos-1);
-		LCD_Screen[Xpos][Ypos-1] = 0;
-		Obj_Color[Xpos][Ypos-1] = 0;
+		LCD_Screen[Ypos-1][Xpos] = 0;
+		Obj_Color[Ypos-1][Xpos] = 0;
 	}
 }
 
 void drawBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_YELLOW);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_YELLOW;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_YELLOW;
 			LCD_Draw_Square_Fill_Border(i,Ypos-1,LCD_COLOR_YELLOW);
-			LCD_Screen[i][Ypos-1] = 1;
-			Obj_Color[i][Ypos-1] = LCD_COLOR_YELLOW;
+			LCD_Screen[Ypos-1][i] = 1;
+			Obj_Color[Ypos-1][i] = LCD_COLOR_YELLOW;
 		}
 }
 
 void eraseBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 			LCD_Erase_Square(i,Ypos-1);
-			LCD_Screen[i][Ypos-1] = 0;
-			Obj_Color[i][Ypos-1] = 0;
+			LCD_Screen[Ypos-1][i] = 0;
+			Obj_Color[Ypos-1][i] = 0;
 		}
 }
 
@@ -701,21 +745,21 @@ void drawBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_GREEN);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_GREEN;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_GREEN;
 			LCD_Draw_Square_Fill_Border(i+1,Ypos-1,LCD_COLOR_GREEN);
-			LCD_Screen[i+1][Ypos-1] = 1;
-			Obj_Color[i+1][Ypos-1] = LCD_COLOR_GREEN;
+			LCD_Screen[Ypos-1][i+1] = 1;
+			Obj_Color[Ypos-1][i+1] = LCD_COLOR_GREEN;
 		}
 	}
 	if (orientation == 2 || orientation == 4){
 		for (int i = Ypos; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos,i-1,LCD_COLOR_GREEN);
-			LCD_Screen[Xpos][i-1] = 1;
-			Obj_Color[Xpos][i-1] = LCD_COLOR_GREEN;
+			LCD_Screen[i-1][Xpos] = 1;
+			Obj_Color[i-1][Xpos] = LCD_COLOR_GREEN;
 			LCD_Draw_Square_Fill_Border(Xpos+1,i,LCD_COLOR_GREEN);
-			LCD_Screen[Xpos+1][i] = 1;
-			Obj_Color[Xpos+1][i] = LCD_COLOR_GREEN;
+			LCD_Screen[i][Xpos+1] = 1;
+			Obj_Color[i][Xpos+1] = LCD_COLOR_GREEN;
 		}
 	}
 }
@@ -724,21 +768,21 @@ void eraseBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 			LCD_Erase_Square(i+1,Ypos-1);
-			LCD_Screen[i+1][Ypos-1] = 0;
-			Obj_Color[i+1][Ypos-1] = 0;
+			LCD_Screen[Ypos-1][i+1] = 0;
+			Obj_Color[Ypos-1][i+1] = 0;
 		}
 	}
 	if (orientation == 2 || orientation == 4){
 		for (int i = Ypos; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos,i-1);
-			LCD_Screen[Xpos][i-1] = 0;
-			Obj_Color[Xpos][i-1] = 0;
+			LCD_Screen[i-1][Xpos] = 0;
+			Obj_Color[i-1][Xpos] = 0;
 			LCD_Erase_Square(Xpos+1,i);
-			LCD_Screen[Xpos+1][i] = 0;
-			Obj_Color[Xpos+1][i] = 0;
+			LCD_Screen[i][Xpos+1] = 0;
+			Obj_Color[i][Xpos+1] = 0;
 		}
 	}
 }
@@ -747,43 +791,43 @@ void drawBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos-1; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_MAGENTA);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_MAGENTA;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_MAGENTA;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos-1,LCD_COLOR_MAGENTA);
-		LCD_Screen[Xpos][Ypos-1] = 1;
-		Obj_Color[Xpos][Ypos-1] = LCD_COLOR_MAGENTA;
+		LCD_Screen[Ypos-1][Xpos] = 1;
+		Obj_Color[Ypos-1][Xpos] = LCD_COLOR_MAGENTA;
 	}
 
 	if (orientation == 3){
 		for (int i = Xpos-1; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_MAGENTA);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_MAGENTA;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_MAGENTA;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos,Ypos+1,LCD_COLOR_MAGENTA);
-		LCD_Screen[Xpos][Ypos+1] = 1;
-		Obj_Color[Xpos][Ypos+1] = LCD_COLOR_MAGENTA;
+		LCD_Screen[Ypos+1][Xpos] = 1;
+		Obj_Color[Ypos+1][Xpos] = LCD_COLOR_MAGENTA;
 	}
 	if (orientation == 2){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos,i,LCD_COLOR_MAGENTA);
-			LCD_Screen[Xpos][i] = 1;
-			Obj_Color[Xpos][i] = LCD_COLOR_MAGENTA;
+			LCD_Screen[i][Xpos] = 1;
+			Obj_Color[i][Xpos] = LCD_COLOR_MAGENTA;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos+1,Ypos,LCD_COLOR_MAGENTA);
-		LCD_Screen[Xpos+1][Ypos] = 1;
-		Obj_Color[Xpos+1][Ypos] = LCD_COLOR_MAGENTA;
+		LCD_Screen[Ypos][Xpos+1] = 1;
+		Obj_Color[Ypos][Xpos+1] = LCD_COLOR_MAGENTA;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos,i,LCD_COLOR_MAGENTA);
-			LCD_Screen[Xpos][i] = 1;
-			Obj_Color[Xpos][i] = LCD_COLOR_MAGENTA;
+			LCD_Screen[i][Xpos] = 1;
+			Obj_Color[i][Xpos] = LCD_COLOR_MAGENTA;
 		}
 		LCD_Draw_Square_Fill_Border(Xpos-1,Ypos,LCD_COLOR_MAGENTA);
-		LCD_Screen[Xpos-1][Ypos] = 1;
-		Obj_Color[Xpos-1][Ypos] = LCD_COLOR_MAGENTA;
+		LCD_Screen[Ypos][Xpos-1] = 1;
+		Obj_Color[Ypos][Xpos-1] = LCD_COLOR_MAGENTA;
 	}
 }
 
@@ -791,43 +835,43 @@ void eraseBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos-1; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos-1);
-		LCD_Screen[Xpos][Ypos-1] = 0;
-		Obj_Color[Xpos][Ypos-1] = 0;
+		LCD_Screen[Ypos-1][Xpos] = 0;
+		Obj_Color[Ypos-1][Xpos] = 0;
 	}
 
 	if (orientation == 3){
 		for (int i = Xpos-1; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 		}
 		LCD_Erase_Square(Xpos,Ypos+1);
-		LCD_Screen[Xpos][Ypos+1] = 0;
-		Obj_Color[Xpos][Ypos+1] = 0;
+		LCD_Screen[Ypos+1][Xpos] = 0;
+		Obj_Color[Ypos+1][Xpos] = 0;
 	}
 	if (orientation == 2){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos,i);
-			LCD_Screen[Xpos][i] = 0;
-			Obj_Color[Xpos][i] = 0;
+			LCD_Screen[i][Xpos] = 0;
+			Obj_Color[i][Xpos] = 0;
 		}
 		LCD_Erase_Square(Xpos+1,Ypos);
-		LCD_Screen[Xpos+1][Ypos] = 0;
-		Obj_Color[Xpos+1][Ypos] = 0;
+		LCD_Screen[Ypos][Xpos+1] = 0;
+		Obj_Color[Ypos][Xpos+1] = 0;
 	}
 	if (orientation == 4){
 		for (int i = Ypos-1; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos,i);
-			LCD_Screen[Xpos][i] = 0;
-			Obj_Color[Xpos][i] = 0;
+			LCD_Screen[i][Xpos] = 0;
+			Obj_Color[i][Xpos] = 0;
 		}
 		LCD_Erase_Square(Xpos-1,Ypos);
-		LCD_Screen[Xpos-1][Ypos] = 0;
-		Obj_Color[Xpos-1][Ypos] = 0;
+		LCD_Screen[Ypos][Xpos-1] = 0;
+		Obj_Color[Ypos][Xpos-1] = 0;
 	}
 }
 
@@ -835,22 +879,32 @@ void drawBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_RED);
-			LCD_Screen[i][Ypos] = 1;
-			Obj_Color[i][Ypos] = LCD_COLOR_RED;
+			LCD_Screen[Ypos][i] = 1;
+			Obj_Color[Ypos][i] = LCD_COLOR_RED;
 			LCD_Draw_Square_Fill_Border(i-1,Ypos-1,LCD_COLOR_RED);
-			LCD_Screen[i-1][Ypos-1] = 1;
-			Obj_Color[i-1][Ypos-1] = LCD_COLOR_RED;
+			LCD_Screen[Ypos-1][i-1] = 1;
+			Obj_Color[Ypos-1][i-1] = LCD_COLOR_RED;
 		}
 	}
+	// Y-1	1	1
+	//   Y	    1	1
+	// Y+1
+	// Y+2
+	//	   X-1  X  X+1  X+2
 	if (orientation == 2 || orientation == 4){
 		for (int i = Ypos; i < (Ypos+2); i++){
 			LCD_Draw_Square_Fill_Border(Xpos,i,LCD_COLOR_RED);
-			LCD_Screen[Xpos][i] = 1;
-			Obj_Color[Xpos][i] = LCD_COLOR_RED;
+			LCD_Screen[i][Xpos] = 1;
+			Obj_Color[i][Xpos] = LCD_COLOR_RED;
 			LCD_Draw_Square_Fill_Border(Xpos+1,i-1,LCD_COLOR_RED);
-			LCD_Screen[Xpos+1][i-1] = 1;
-			Obj_Color[Xpos+1][i-1] = LCD_COLOR_RED;
+			LCD_Screen[i-1][Xpos+1] = 1;
+			Obj_Color[i-1][Xpos+1] = LCD_COLOR_RED;
 		}
+// Y-1			1
+//   Y	    1	1
+// Y+1		1
+// Y+2
+//	   X-1  X  X+1  X+2
 	}
 }
 
@@ -858,21 +912,21 @@ void eraseBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
-			LCD_Screen[i][Ypos] = 0;
-			Obj_Color[i][Ypos] = 0;
+			LCD_Screen[Ypos][i] = 0;
+			Obj_Color[Ypos][i] = 0;
 			LCD_Erase_Square(i-1,Ypos-1);
-			LCD_Screen[i-1][Ypos-1] = 0;
-			Obj_Color[i-1][Ypos-1] = 0;
+			LCD_Screen[Ypos-1][i-1] = 0;
+			Obj_Color[Ypos-1][i-1] = 0;
 		}
 	}
 	if (orientation == 2 || orientation == 4){
 		for (int i = Ypos; i < (Ypos+2); i++){
 			LCD_Erase_Square(Xpos,i);
-			LCD_Screen[Xpos][i] = 0;
-			Obj_Color[Xpos][i] = 0;
+			LCD_Screen[i][Xpos] = 0;
+			Obj_Color[i][Xpos] = 0;
 			LCD_Erase_Square(Xpos+1,i-1);
-			LCD_Screen[Xpos+1][i-1] = 0;
-			Obj_Color[Xpos+1][i-1] = 0;
+			LCD_Screen[i-1][Xpos+1] = 0;
+			Obj_Color[i-1][Xpos+1] = 0;
 		}
 	}
 }
@@ -1023,11 +1077,47 @@ uint16_t updateYpos(){
 	CurrentBlock[2] += 1;
 	return CurrentBlock[2];
 }
+
+void updateXpos(int dir){
+	uint16_t curX = CurrentBlock[1];
+	if (dir == 1){
+		if (curX > 0) {
+			CurrentBlock[1] -= 1;
+		}
+	}
+	if (dir == 2){
+		if (curX < 11) {
+			CurrentBlock[1] += 1;
+		}
+	}
+}
+
 int isBottom(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Orientation = CurrentBlock[3];
 	if (BlockNum == 1){
 
+	}
+}
+
+int canMoveLeft(){
+	uint16_t BlockNum = CurrentBlock[0];
+	uint16_t Xpos = CurrentBlock[1];
+	uint16_t Ypos = CurrentBlock[2];
+	uint16_t Orientation = CurrentBlock[3];
+
+	if (BlockNum == 1){
+		if (Orientation == 1 || Orientation == 3){
+			if (Xpos > 0){
+					return 1;
+			}
+		}
+		if (Orientation == 2 || Orientation == 4){
+			if (Xpos > -1){
+					return 1;
+			}
+		}
+		return 0;
 	}
 }
 
@@ -1040,13 +1130,13 @@ int isFull(){
 	if (BlockNum == 1){
 		if (Orientation == 1 || Orientation == 3){
 			for (uint16_t i = Xpos; i < Xpos+4; i++){
-				if (LCD_Screen[Ypos+1][Ypos+1] == 1){
+				if (LCD_Screen[Ypos+1][i] == 1){
 					return 0;
 				}
 			}
 		}
 		if (Orientation == 2 || Orientation == 4){
-			if (LCD_Screen[Xpos][Ypos+2] == 1){
+			if (LCD_Screen[Ypos+3][Xpos+1] == 1){
 				return 0;
 			}
 		}
@@ -1056,24 +1146,24 @@ int isFull(){
 	if (BlockNum == 2){
 		if (Orientation == 1){
 			for(uint16_t i = Xpos; i < Xpos+3; i++){
-				if (LCD_Screen[i][Ypos+1] == 1)
+				if (LCD_Screen[Ypos+1][i] == 1)
 				{
 					return 0;
 				}
 			}
 		}
 		if (Orientation == 2){
-			if (LCD_Screen[Xpos+1][Ypos+2] == 1 || LCD_Screen[Xpos+2][Ypos]){
+			if (LCD_Screen[Ypos+2][Xpos+1] == 1 || LCD_Screen[Ypos][Xpos+2]){
 				return 0;
 			}
 		}
 		if (Orientation == 3){
-			if (LCD_Screen[Xpos][Ypos+1] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1 || LCD_Screen[Xpos+2][Ypos+2] == 1) {
+			if (LCD_Screen[Ypos+1][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1 || LCD_Screen[Ypos+2][Xpos+2] == 1) {
 				return 0;
 			}
 		}
 		if (Orientation == 4){
-			if (LCD_Screen[Xpos][Ypos+2] == 1 || LCD_Screen[Xpos+1][Ypos+2] == 1){
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+2][Xpos+1] == 1){
 				return 0;
 			}
 		}
@@ -1083,24 +1173,24 @@ int isFull(){
 	if (BlockNum == 3){
 		if (Orientation == 1){
 			for(uint16_t i = Xpos; i < Xpos+3; i++){
-				if (LCD_Screen[i][Ypos+1] == 1)
+				if (LCD_Screen[Ypos+1][i] == 1)
 				{
 					return 0;
 				}
 			}
 		}
 		if (Orientation == 2){
-			if (LCD_Screen[Xpos+1][Ypos+2] == 1 || LCD_Screen[Xpos+2][Ypos+2]){
+			if (LCD_Screen[Ypos+2][Xpos+1] == 1 || LCD_Screen[Ypos+2][Xpos+2]){
 				return 0;
 			}
 		}
 		if (Orientation == 3){
-			if (LCD_Screen[Xpos][Ypos+2] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1 || LCD_Screen[Xpos+2][Ypos+1] == 1) {
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1 || LCD_Screen[Ypos+1][Xpos+2] == 1) {
 				return 0;
 			}
 		}
 		if (Orientation == 4){
-			if (LCD_Screen[Xpos][Ypos] == 1 || LCD_Screen[Xpos+1][Ypos+2] == 1) {
+			if (LCD_Screen[Ypos][Xpos] == 1 || LCD_Screen[Ypos+2][Xpos+1] == 1) {
 				return 0;
 			}
 		}
@@ -1108,7 +1198,7 @@ int isFull(){
 	}
 
 	if (BlockNum == 4){
-		if (LCD_Screen[Xpos][Ypos+1] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1) {
+		if (LCD_Screen[Ypos+1][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1) {
 			return 0;
 		}
 		return 1;
@@ -1116,12 +1206,12 @@ int isFull(){
 
 	if (BlockNum == 5){
 		if (Orientation == 1 || Orientation == 3){
-			if (LCD_Screen[Xpos][Ypos+1] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1 || LCD_Screen[Xpos+2][Ypos] == 1) {
+			if (LCD_Screen[Ypos+1][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1 || LCD_Screen[Ypos][Xpos+2] == 1) {
 				return 0;
 			}
 		}
 		if (Orientation == 2 || Orientation == 4){
-			if (LCD_Screen[Xpos][Ypos+1] == 1 || LCD_Screen[Xpos+1][Ypos+2] == 1) {
+			if (LCD_Screen[Ypos+1][Xpos] == 1 || LCD_Screen[Ypos+2][Xpos+1] == 1) {
 				return 0;
 			}
 		}
@@ -1131,23 +1221,23 @@ int isFull(){
 	if (BlockNum == 6){
 		if (Orientation == 1){
 			for (uint16_t i = Xpos-1; i < Xpos+2; i++){
-				if (LCD_Screen[i][Ypos+1] == 1){
+				if (LCD_Screen[Ypos+1][i] == 1){
 					return 0;
 				}
 			}
 		}
 		if (Orientation == 2){
-			if (LCD_Screen[Xpos][Ypos+2] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1){
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1){
 				return 0;
 			}
 		}
 		if (Orientation == 3){
-			if (LCD_Screen[Xpos-1][Ypos+1] == 1 || LCD_Screen[Xpos][Ypos+2] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1){
+			if (LCD_Screen[Ypos+1][Xpos-1] == 1 || LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1){
 				return 0;
 			}
 		}
 		if (Orientation == 4){
-			if (LCD_Screen[Xpos-1][Ypos+1] == 1 || LCD_Screen[Xpos][Ypos+2] == 1){
+			if (LCD_Screen[Ypos+1][Xpos-1] == 1 || LCD_Screen[Ypos+2][Xpos] == 1){
 				return 0;
 			}
 		}
@@ -1156,18 +1246,94 @@ int isFull(){
 
 	if (BlockNum == 7){
 		if (Orientation == 1 || Orientation == 3){
-			if (LCD_Screen[Xpos][Ypos] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1 || LCD_Screen[Xpos+2][Ypos+1] == 1) {
+			if (LCD_Screen[Ypos][Xpos-1] == 1 || LCD_Screen[Ypos+1][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1) {
 				return 0;
 			}
 		}
 		if (Orientation == 2 || Orientation == 4){
-			if (LCD_Screen[Xpos][Ypos+2] == 1 || LCD_Screen[Xpos+1][Ypos+1] == 1) {
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1) {
 				return 0;
 			}
 		}
 		return 1;
 	}
 	return 1;
+}
+
+void updateTop(){
+//	uint16_t BlockNum = CurrentBlock[0];
+//	uint16_t Xpos = CurrentBlock[1];
+	uint16_t Ypos = CurrentBlock[2];
+//	uint16_t Orientation = CurrentBlock[3];
+
+	for (int i = Ypos; i > 0; i++){
+		for (int j = 0; j < 12; j++){
+			if (LCD_Screen[i][j] == 1){
+				if (i > topRow[j]){
+					topRow[j] = i;
+				}
+			}
+		}
+	}
+}
+
+void checkForTetris(){
+	int rowComplete = 0;
+	int singleLine = 0;
+	int doubleLine = 0;
+	int tripleLine = 0;
+	int fullTetris = 0;
+	int count = 0;
+
+	for (int i = 1; i < 5; i++){
+		for (int j = 0; j < 12; j++){
+			if (LCD_Screen[i][j] == 1){
+				 rowComplete = 1;
+			}
+			else rowComplete = 0;
+		}
+		if (rowComplete == 1)
+		{
+			shiftRowDown();
+			count += 1;
+		}
+	}
+
+	if (count = 1){
+		singleLine += 1;
+	}
+	if (count = 2){
+		doubleLine += 1;
+	}
+	if (count = 3){
+		tripleLine += 1;
+	}
+	if (count = 4){
+		fullTetris += 1;
+	}
+}
+
+void shiftRowDown(){
+	int Highest_Row = 0;
+	for (int i = 0; i < 12; i++){
+		if (topRow[i] > Highest_Row){
+			Highest_Row = topRow[i];
+		}
+	}
+
+	for (int j = 1; j <= Highest_Row; j++){
+		for (int k = 0; k < 12; k++){
+			LCD_Screen[j][k] = LCD_Screen[j+1][k];
+			Obj_Color[j][k] = Obj_Color[j+1][k];
+			LCD_Draw_Square_Fill_Border(k,j,Obj_Color[j+1][k]);
+		}
+	}
+
+	for (int l = 0; l < 12; l++){
+		LCD_Screen[Highest_Row][l] = 0;
+		Obj_Color[Highest_Row][l] = 0;
+		LCD_Erase_Square(l,Highest_Row);
+	}
 }
 
 /**

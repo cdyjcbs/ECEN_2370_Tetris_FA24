@@ -42,8 +42,10 @@ STMPE811_State_t STMPE811_Init(void)
 
     // Initialze I2C3 ports 
     I2C3_MspInit();
+//    I2C3_GPIO_Init();
     /* Initialize I2C */
     I2C3_Init();
+//    I2C3__Init();
 
     /* Reset */
     I2C3_Write(STMPE811_ADDRESS, STMPE811_SYS_CTRL1, 0x02);
@@ -312,7 +314,8 @@ static void I2C3_Init()
     {
         for(;;); // Catch error
     }
-    return;
+//    return;
+    HAL_Delay(100);
 }
 
 // GPIO Initializations 

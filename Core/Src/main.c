@@ -39,10 +39,13 @@ int main(void)
   // Note - You, the developer, MAY have to play with some of this coniguration as you progress in your project
   SystemClockOverride();
 
+//  I2C3_GPIO_Init();
+//  I2C3_Init();
+
   ApplicationInit(); // Initializes the LCD functionality
-  TIM3_App_Start();
+//  TIM3_App_Start();
 //  LCD_Visual_Demo();
-//  GameInit();
+  GameInit();
 
 //  HAL_Delay(100);
 //  LCD_Touch_Polling();

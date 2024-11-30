@@ -27,10 +27,12 @@ void ApplicationInit(void)
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
-    GameInit();
-    buttonIRQInit();
-    RNG_Init();
-    timer3Init();
+//    GameInit();
+//    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+//    buttonIRQInit();
+//    RNG_Init();
+//    gameStart();
+//    timer3Init();
 
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -78,20 +80,23 @@ void TIM3_IRQHandler() {
 	        if (full != 0){
 		        eraseCurrentBlock();
 				uint16_t currentYpos = updateYpos();
+//		        updateYpos();
 				drawCurrentBlock();
 	        }
 
 			if (full == 0){
-//				uint16_t currentYpos = getCurrentYpos();
-//				if (currentYpos > 1) {
-				uint32_t randBlock = GetRandomBlock();
-				updateCurrentBlock(randBlock, 5, 2, 1);
-				drawCurrentBlock();
-//				}
-//				if (currentYpos == 1){
-//				HAL_NVIC_DisableIRQ(TIM3_IRQn);
-//				gameOver();
-//				}
+				uint16_t currentYpos = getCurrentYpos();
+				if (currentYpos <= 1){
+					HAL_NVIC_DisableIRQ(TIM3_IRQn);
+					gameOver();
+				}
+				if (currentYpos > 1) {
+					updateTop();
+					checkForTetris();
+					uint32_t randBlock = GetRandomBlock();
+					updateCurrentBlock(randBlock, 5, 1, 1);
+					drawCurrentBlock();
+				}
 			}
 	 }
 }
@@ -105,8 +110,21 @@ void LCD_Touch_Polling_Demo(void)
 		/* If touch pressed */
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 			/* Touch valid */
-			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
-			LCD_Clear(0, LCD_COLOR_RED);
+			if (StaticTouchData.x < 120) {
+				LCD_Clear(0, LCD_COLOR_RED);
+//				eraseCurrentBlock();
+//				updateXPos(1);
+//				drawCurrentBlock();
+			}
+			if (StaticTouchData.x >= 120){
+				LCD_Clear(0, LCD_COLOR_GREEN);
+//				eraseCurrentBlock();
+//				updateXPos(2);
+//				drawCurrentBlock();
+			}
+//
+//			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
+//			LCD_Clear(0, LCD_COLOR_RED);
 		} else {
 			/* Touch not pressed */
 			printf("Not Pressed\n\n");
@@ -121,8 +139,21 @@ void LCD_Touch_Polling(void)
 	while (1) {
 		/* If touch pressed */
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-			/* Touch valid */
-			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
+						/* Touch valid */
+						if (StaticTouchData.x < 120) {
+							int canMove = canMoveLeft();
+							if (canMove == 1){
+								eraseCurrentBlock();
+								updateXpos(1);
+								drawCurrentBlock();
+							}
+						}
+						if (StaticTouchData.x >= 120){
+							eraseCurrentBlock();
+							updateXpos(2);
+							drawCurrentBlock();
+						}
+//			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
 //			moveBlock(StaticTouchData.x, StaticTouchData.y, h);
 		}
 	}

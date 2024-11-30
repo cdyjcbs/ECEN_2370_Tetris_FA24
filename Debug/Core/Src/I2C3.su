@@ -1,0 +1,2 @@
+../Core/Src/I2C3.c:13:6:I2C3_GPIO_Init	40	static
+../Core/Src/I2C3.c:30:6:I2C3__Init	4	static
