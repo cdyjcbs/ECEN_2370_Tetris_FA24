@@ -60,8 +60,8 @@ void TIM3_App_Start(){
 
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-//	addSchedulerEvent(ROTATE_BLOCK);
-	rotateBlock();
+	addSchedulerEvent(ROTATE_BLOCK);
+//	rotateBlock();
 //	eraseCurrentBlock();
 //	uint32_t randBlock = GetRandomBlock();
 //	uint32_t randOrientation = GetRandomOrientation();
@@ -78,16 +78,13 @@ void TIM3_IRQHandler() {
 	        int full = isFull();
 
 	        if (full != 0){
-		        eraseCurrentBlock();
-//				uint16_t currentYpos = updateYpos();
-		        updateYpos();
-				drawCurrentBlock();
+	        	addSchedulerEvent(DROP_BLOCK);
 	        }
 
 			if (full == 0){
 				uint16_t currentYpos = getCurrentYpos();
 				if (currentYpos <= 1){
-					HAL_NVIC_DisableIRQ(TIM3_IRQn);
+//					HAL_NVIC_DisableIRQ(TIM3_IRQn);
 					gameOver();
 				}
 				if (currentYpos > 1) {
@@ -231,15 +228,17 @@ void EXTI15_10_IRQHandler()
 		if (StaticTouchData.x < 120) {
 //			int canMove = canMoveLeft();
 //			if (canMove == 1){
-				eraseCurrentBlock();
-				updateXpos(1);
-				drawCurrentBlock();
+//				eraseCurrentBlock();
+//				updateXpos(1);
+//				drawCurrentBlock();
+			addSchedulerEvent(MOVE_LEFT);
 //			}
 		}
 		else if (StaticTouchData.x >= 120){
-			eraseCurrentBlock();
-			updateXpos(2);
-			drawCurrentBlock();
+//			eraseCurrentBlock();
+//			updateXpos(2);
+//			drawCurrentBlock();
+			addSchedulerEvent(MOVE_RIGHT);
 		}
 //		printf("\nX: %03d\nY: %03d \n", StaticTouchData.x, StaticTouchData.y);
 //		LCD_Clear(0, LCD_COLOR_RED);

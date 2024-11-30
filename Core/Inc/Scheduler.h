@@ -17,6 +17,10 @@
 #define APP_DELAY_FLAG_EVENT 		(1 << 3)
 #define DEVICE_ID_AND_TEMP_EVENT 	(1 << 4)
 #define ROTATE_BLOCK				(1 << 5)
+#define DROP_BLOCK					(1 << 6)
+#define MOVE_LEFT					(1 << 7)
+#define MOVE_RIGHT					(1 << 8)
+#define GAME_OVER					(1 << 9)
 
 // Returns the scheduled events
 uint32_t getScheduledEvents();

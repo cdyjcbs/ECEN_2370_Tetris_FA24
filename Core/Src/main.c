@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <ApplicationCode.h>
 #include <main.h>
+#include <Scheduler.h>
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -54,9 +55,34 @@ int main(void)
   // Un-comment the below function after setting COMPILE_TOUCH to 1 in stmpe811.h
   //LCD_Touch_Polling_Demo(); // This function Will not return
 
-  while (1)
-  {
+  uint32_t eventsToRun;
 
+  for (;;)
+  {
+//	  Gyro_DevID();
+    /* USER CODE END WHILE */
+	  eventsToRun = getScheduledEvents();
+	  if (eventsToRun & ROTATE_BLOCK){
+		  rotateBlock();
+//		  HAL_Delay(100);
+		  removeSchedulerEvent(ROTATE_BLOCK);
+	  }
+	  if (eventsToRun & DROP_BLOCK){
+		  moveBlockDown();
+		  removeSchedulerEvent(DROP_BLOCK);
+	  }
+	  if (eventsToRun & MOVE_LEFT){
+		  moveBlockLeft();
+		  removeSchedulerEvent(MOVE_LEFT);
+	  }
+	  if (eventsToRun & MOVE_RIGHT){
+		  moveBlockRight();
+		  removeSchedulerEvent(MOVE_RIGHT);
+	  }
+	  if (eventsToRun & GAME_OVER){
+		  gameOver();
+	  }
+    /* USER CODE BEGIN 3 */
   }
 
 }

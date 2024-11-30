@@ -3,7 +3,7 @@
 ../Core/Src/ApplicationCode.c:57:6:TIM3_App_Start	8	static
 ../Core/Src/ApplicationCode.c:61:6:EXTI0_IRQHandler	8	static
 ../Core/Src/ApplicationCode.c:74:6:TIM3_IRQHandler	24	static
-../Core/Src/ApplicationCode.c:106:6:LCD_Touch_Polling_Demo	8	static
-../Core/Src/ApplicationCode.c:136:6:LCD_Touch_Polling	16	static
-../Core/Src/ApplicationCode.c:166:6:LCDTouchScreenInterruptGPIOInit	32	static
-../Core/Src/ApplicationCode.c:192:6:EXTI15_10_IRQHandler	16	static
+../Core/Src/ApplicationCode.c:103:6:LCD_Touch_Polling_Demo	8	static
+../Core/Src/ApplicationCode.c:133:6:LCD_Touch_Polling	16	static
+../Core/Src/ApplicationCode.c:163:6:LCDTouchScreenInterruptGPIOInit	32	static
+../Core/Src/ApplicationCode.c:189:6:EXTI15_10_IRQHandler	16	static

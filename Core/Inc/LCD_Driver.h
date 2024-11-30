@@ -106,12 +106,16 @@ void eraseCurrentBlock();
 void drawBottomBorder();
 uint16_t getCurrentYpos();
 void gameStart();
+void gameOver();
 void screenReset();
 void updateXpos(int dir);
 int canMoveLeft();
 void updateTop();
 
 void shiftRowDown();
+void moveBlockDown();
+void moveBlockLeft();
+void moveBlockRight();
 
 
 

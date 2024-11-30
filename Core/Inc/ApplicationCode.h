@@ -10,7 +10,8 @@
 #include <Button_Driver.h>
 #include <Timer_Driver.h>
 #include <I2C3.h>
-
+#include <RNG.h>
+#include <Scheduler.h>
 #include <stdio.h>
 
 
@@ -19,6 +20,7 @@
 
 void ApplicationInit(void);
 void LCD_Visual_Demo(void);
+void TIM3_App_Start();
 
 #if (COMPILE_TOUCH_FUNCTIONS == 1) && (COMPILE_TOUCH_INTERRUPT_SUPPORT == 0)
 void LCD_Touch_Polling_Demo(void);

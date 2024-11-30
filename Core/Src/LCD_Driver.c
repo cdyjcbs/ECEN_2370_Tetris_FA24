@@ -480,36 +480,36 @@ void screenReset(){
 
 void gameOver(){
 	while(1){
-	LCD_Clear(0,LCD_COLOR_BLACK);
-	HAL_Delay(200);
-	LCD_SetTextColor(LCD_COLOR_RED);
-	LCD_SetFont(&Font16x24);
+		LCD_Clear(0,LCD_COLOR_BLACK);
+//		HAL_Delay(200);
+		LCD_SetTextColor(LCD_COLOR_RED);
+		LCD_SetFont(&Font16x24);
 
-	LCD_DisplayChar(95,120,'G');
-	HAL_Delay(200);
-	LCD_DisplayChar(111,120,'a');
-	HAL_Delay(200);
-	LCD_DisplayChar(125,120,'m');
-	HAL_Delay(200);
-	LCD_DisplayChar(140,120,'e');
-	HAL_Delay(200);
+		LCD_DisplayChar(95,120,'G');
+//		HAL_Delay(200);
+		LCD_DisplayChar(111,120,'a');
+//		HAL_Delay(200);
+		LCD_DisplayChar(125,120,'m');
+//		HAL_Delay(200);
+		LCD_DisplayChar(140,120,'e');
+//		HAL_Delay(200);
+//
+		LCD_DisplayChar(92,145,'O');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,145,'v');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,145,'e');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,145,'r');
+//		HAL_Delay(200);
+		LCD_DisplayChar(135,145,'!');
+//		HAL_Delay(200);
+		LCD_DisplayChar(140,145,'!');
+//		HAL_Delay(200);
+		LCD_DisplayChar(145,145,'!');
 
-	LCD_DisplayChar(92,145,'O');
-	HAL_Delay(200);
-	LCD_DisplayChar(107,145,'v');
-	HAL_Delay(200);
-	LCD_DisplayChar(118,145,'e');
-	HAL_Delay(200);
-	LCD_DisplayChar(129,145,'r');
-	HAL_Delay(200);
-	LCD_DisplayChar(135,145,'!');
-	HAL_Delay(200);
-	LCD_DisplayChar(140,145,'!');
-	HAL_Delay(200);
-	LCD_DisplayChar(145,145,'!');
 
-
-	HAL_Delay(1000);
+		HAL_Delay(1000);
 	}
 }
 
@@ -1336,6 +1336,25 @@ void shiftRowDown(){
 		LCD_Erase_Square(l,Highest_Row);
 	}
 }
+
+void moveBlockDown(){
+	  eraseCurrentBlock();
+	  updateYpos();
+	  drawCurrentBlock();
+}
+
+void moveBlockLeft(){
+	eraseCurrentBlock();
+	updateXpos(1);
+	drawCurrentBlock();
+}
+
+void moveBlockRight(){
+	eraseCurrentBlock();
+	updateXpos(2);
+	drawCurrentBlock();
+}
+
 
 /**
   * @brief  This function is executed in case of error occurrence.
