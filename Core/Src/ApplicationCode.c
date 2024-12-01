@@ -60,13 +60,10 @@ void TIM3_App_Start(){
 
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-	addSchedulerEvent(ROTATE_BLOCK);
-//	rotateBlock();
-//	eraseCurrentBlock();
-//	uint32_t randBlock = GetRandomBlock();
-//	uint32_t randOrientation = GetRandomOrientation();
-//	updateCurrentBlock(randBlock, 5, 5, randOrientation);
-//	drawCurrentBlock();
+//	int rotatable = ableToRotate();
+//	if (rotatable == 1){
+		addSchedulerEvent(ROTATE_BLOCK);
+//	}
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
@@ -88,8 +85,8 @@ void TIM3_IRQHandler() {
 					gameOver();
 				}
 				if (currentYpos > 1) {
-//					updateTop();
-//					checkForTetris();
+					updateTop();
+					checkForTetris();
 					uint32_t randBlock = GetRandomBlock();
 					updateCurrentBlock(randBlock, 5, 1, 1);
 					drawCurrentBlock();
@@ -226,25 +223,19 @@ void EXTI15_10_IRQHandler()
 		DetermineTouchPosition(&StaticTouchData);
 		/* Touch valid */
 		if (StaticTouchData.x < 120) {
-//			int canMove = canMoveLeft();
-//			if (canMove == 1){
-//				eraseCurrentBlock();
-//				updateXpos(1);
-//				drawCurrentBlock();
-			addSchedulerEvent(MOVE_LEFT);
-//			}
+			int  moveLeft = canMoveLeft();
+			if (moveLeft == 1){
+				addSchedulerEvent(MOVE_LEFT);
+			}
 		}
 		else if (StaticTouchData.x >= 120){
-//			eraseCurrentBlock();
-//			updateXpos(2);
-//			drawCurrentBlock();
-			addSchedulerEvent(MOVE_RIGHT);
+			int moveRight = canMoveRight();
+			if (moveRight == 1){
+				addSchedulerEvent(MOVE_RIGHT);
+			}
 		}
-//		printf("\nX: %03d\nY: %03d \n", StaticTouchData.x, StaticTouchData.y);
-//		LCD_Clear(0, LCD_COLOR_RED);
 
 	}else{
-
 		/* Touch not pressed */
 //		printf("\nNot pressed \n");
 //		LCD_Clear(0, LCD_COLOR_GREEN);
