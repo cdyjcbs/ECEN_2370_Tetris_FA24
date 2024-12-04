@@ -79,14 +79,14 @@ void TIM3_IRQHandler() {
 	        }
 
 			if (full == 0){
-				uint16_t currentYpos = getCurrentYpos();
-				if (currentYpos <= 1){
+				int top_row = updateTop();
+//				uint16_t currentYpos = getCurrentYpos();
+				if (top_row <= 1){
 //					HAL_NVIC_DisableIRQ(TIM3_IRQn);
 					gameOver();
 				}
-				if (currentYpos > 1) {
-					updateTop();
-					checkForTetris();
+				if (top_row > 1) {
+					checkForTetris(top_row);
 					uint32_t randBlock = GetRandomBlock();
 					updateCurrentBlock(randBlock, 5, 1, 1);
 					drawCurrentBlock();

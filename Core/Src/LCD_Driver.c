@@ -24,6 +24,7 @@ uint16_t Obj_Color[16][12] = {0};
 int LCD_Screen[16][12] = {0};
 int blockSize = 20;
 int topRow[12] = {0};
+int result[5] = {0};
 
 
 
@@ -471,7 +472,7 @@ void GameInit(void)
 	LCD_SetFont(&Font16x24);
 
 	drawBottomBorder();
-	updateCurrentBlock(1, 4, 2, 1);
+	updateCurrentBlock(7, 4, 2, 1);
 	drawCurrentBlock();
 	HAL_Delay(100);
 }
@@ -1171,11 +1172,10 @@ int isLeftFull(){
 			}
 		}
 		if (Orientation == 3){
-			if (LCD_Screen[Ypos][Xpos-1] == 1 || LCD_Screen[Ypos+1][Xpos+1]){
+			if (LCD_Screen[Ypos][Xpos-1] == 1 || LCD_Screen[Ypos+1][Xpos+1] == 1){
 					return 0;
 				}
 			}
-		}
 		if (Orientation == 4){
 			for (int i = Ypos-1; i < Ypos+1; i++){
 				if (LCD_Screen[i][Xpos] == 1){
@@ -1185,6 +1185,7 @@ int isLeftFull(){
 			if (LCD_Screen[Ypos+1][Xpos-1] == 1){
 				return 0;
 			}
+		}
 	}
 
 	if (BlockNum == 3){
@@ -1205,14 +1206,14 @@ int isLeftFull(){
 		}
 		if (Orientation == 3){
 			for (int i = Ypos; i < Ypos+2; i++){
-				if (LCD_Screen[i][Xpos-1]){
+				if (LCD_Screen[i][Xpos-1] == 1){
 					return 0;
 				}
 			}
 		}
 		if (Orientation == 4){
 			for (int i = Ypos; i < Ypos+2; i++){
-				if (LCD_Screen[i][Xpos]){
+				if (LCD_Screen[i][Xpos] == 1){
 					return 0;
 				}
 			}
@@ -1236,7 +1237,7 @@ int isLeftFull(){
 			if (LCD_Screen[Ypos][Xpos-1] == 1){
 				return 0;
 			}
-			if (LCD_Screen[Ypos-1][Xpos]){
+			if (LCD_Screen[Ypos-1][Xpos] == 1){
 				return 0;
 			}
 		}
@@ -1311,7 +1312,6 @@ int isLeftFull(){
 	}
 	}
 	return 1;
-
 }
 
 int canMoveLeft(){
@@ -1476,7 +1476,7 @@ int isRightFull(){
 						return 0;
 					}
 				}
-				if (LCD_Screen[Ypos-1][Xpos+1]){
+				if (LCD_Screen[Ypos-1][Xpos+1] == 1){
 					return 0;
 				}
 			}
@@ -1515,7 +1515,7 @@ int isRightFull(){
 			}
 			if (Orientation == 2 || Orientation == 4){
 				for (int i = Ypos-1; i < Ypos+1; i++){
-					if (LCD_Screen[i][Xpos+2]){
+					if (LCD_Screen[i][Xpos+2] == 1){
 						return 0;
 					}
 				}
@@ -1618,7 +1618,7 @@ int isFull(){
 			}
 		}
 		if (Orientation == 2){
-			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos][Xpos+1]){
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos][Xpos+1] == 1){
 				return 0;
 			}
 		}
@@ -1645,7 +1645,7 @@ int isFull(){
 			}
 		}
 		if (Orientation == 2){
-			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+2][Xpos+1]){
+			if (LCD_Screen[Ypos+2][Xpos] == 1 || LCD_Screen[Ypos+2][Xpos+1] == 1){
 				return 0;
 			}
 		}
@@ -1725,37 +1725,43 @@ int isFull(){
 	return 1;
 }
 
-void updateTop(){
+int updateTop(){
 //	uint16_t BlockNum = CurrentBlock[0];
 //	uint16_t Xpos = CurrentBlock[1];
 	uint16_t Ypos = CurrentBlock[2];
 //	uint16_t Orientation = CurrentBlock[3];
+	int Highest_Row = 14;
 
 	for (int i = Ypos-2; i < 15; i++){
 		for (int j = 0; j < 12; j++){
 			if (LCD_Screen[i][j] == 1){
 				if (i < topRow[j]){
 					topRow[j] = i;
+					if (i < Highest_Row){
+						Highest_Row = i;
+					}
 				}
 			}
 		}
 	}
+	return Highest_Row;
 }
 
-void checkForTetris(){
+void checkForTetris(int Highest_Row){
+	int singleLine = result[1];
+	int doubleLine = result[2];
+	int tripleLine = result[3];
+	int fullTetris = result[4];
 	int rowComplete = 0;
-	int singleLine = 0;
-	int doubleLine = 0;
-	int tripleLine = 0;
-	int fullTetris = 0;
+	int consecutive = 0;
 	int count = 0;
 
-	int Highest_Row = 14;
-		for (int i = 0; i < 12; i++){
-			if (topRow[i] < Highest_Row){
-				Highest_Row = topRow[i];
-			}
-		}
+//	int Highest_Row = 14;
+//		for (int i = 0; i < 12; i++){
+//			if (topRow[i] < Highest_Row){
+//				Highest_Row = topRow[i];
+//			}
+//		}
 
 	for (int i = 14; i >= Highest_Row; i--){
 		for (int j = 0; j < 12; j++){
@@ -1770,23 +1776,33 @@ void checkForTetris(){
 
 		if (rowComplete == 1)
 		{
-			shiftRowDown();
-			count += 1;
+			if (consecutive == 1)
+			{
+				shiftRowDown();
+				count += 1;
+			}
+			else if (consecutive == 0){
+				shiftRowDown();
+				count += 1;
+				consecutive == 1;
+			}
 		}
-	}
-
-	if (count == 1){
-		singleLine += 1;
-	}
-	if (count == 2){
-		doubleLine += 1;
-	}
-	if (count == 3){
-		tripleLine += 1;
-	}
-	if (count == 4){
-		fullTetris += 1;
-	}
+		else if(rowComplete == 0){
+			if (consecutive == 1){
+				if (count == 1){
+					singleLine += 1;
+				}
+				if (count == 2){
+					doubleLine += 1;
+				}
+				if (count == 3){
+					tripleLine += 1;
+				}
+				if (count == 4){
+					fullTetris += 1;
+				}
+			}
+		}
 }
 
 void shiftRowDown(){
@@ -1799,7 +1815,11 @@ void shiftRowDown(){
 
 	for (int j = 14; j >= Highest_Row; j--){
 		for (int k = 0; k < 12; k++){
-			LCD_Screen[j][k] = LCD_Screen[j-1][k];
+			uint16_t Above_Value = LCD_Screen[j-1][k];
+			if (Above_Value == LCD_COLOR_BLACK){
+				Above_Value = GameScreenColor;
+			}
+			LCD_Screen[j][k] = Above_Value;
 			Obj_Color[j][k] = Obj_Color[j-1][k];
 			LCD_Draw_Square_Fill_Border(k,j,Obj_Color[j-1][k]);
 		}

@@ -110,7 +110,9 @@ void gameOver();
 void screenReset();
 void updateXpos(int dir);
 
-void updateTop();
+int updateTop();
+
+void checkForTetris();
 
 void shiftRowDown();
 void moveBlockDown();
