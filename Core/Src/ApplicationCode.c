@@ -33,6 +33,7 @@ void ApplicationInit(void)
     RNG_Init();
 //    gameStart();
     timer3Init();
+    timer5Init();
 
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -54,8 +55,9 @@ void LCD_Visual_Demo(void)
 	visualDemo();
 }
 
-void TIM3_App_Start(){
+void TIM_App_Start(){
 	TIM3_Start();
+	TIM5_Start();
 }
 
 void EXTI0_IRQHandler(){
@@ -95,6 +97,13 @@ void TIM3_IRQHandler() {
 	 }
 }
 
+void TIM5_IRQHandler(){
+	 if (__HAL_TIM_GET_FLAG(&TIM5_Config, TIM_FLAG_UPDATE)) {
+		 // Clear the update interrupt flag
+		 __HAL_TIM_CLEAR_FLAG(&TIM5_Config, TIM_FLAG_UPDATE);
+		 addSecond();
+	 }
+}
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 void LCD_Touch_Polling_Demo(void)

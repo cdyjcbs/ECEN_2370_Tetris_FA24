@@ -11,9 +11,14 @@
 #include "stm32f4xx_hal.h"
 
 extern TIM_HandleTypeDef TIM3_Config;
+extern TIM_HandleTypeDef TIM5_Config;
+
 
 void timer3Init();
 void TIM3_Start();
+
+void timer5Init();
+void TIM5_Start();
 
 
 #endif /* INC_TIMER_DRIVER_H_ */

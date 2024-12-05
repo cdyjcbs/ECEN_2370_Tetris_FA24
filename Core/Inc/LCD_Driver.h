@@ -126,7 +126,11 @@ int ableToRotate();
 
 int isLeftFull();
 
+void totalGameTime();
 
+void addSecond();
+
+int updateTop();
 
 void LCD_Error_Handler(void);
 

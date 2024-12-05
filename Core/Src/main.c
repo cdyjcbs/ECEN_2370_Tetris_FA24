@@ -44,7 +44,7 @@ int main(void)
 //  I2C3_Init();
 
   ApplicationInit(); // Initializes the LCD functionality
-  TIM3_App_Start();
+  TIM_App_Start();
 //  LCD_Visual_Demo();
 //  GameInit();
 

@@ -25,7 +25,8 @@ int LCD_Screen[16][12] = {0};
 int blockSize = 20;
 int topRow[12] = {0};
 int result[5] = {0};
-
+uint16_t gameTime = 0;
+int finalGameTime[3] = {0};
 
 
 static uint16_t CurrentBlock[4] = {0};
@@ -499,38 +500,98 @@ void screenReset(){
 }
 
 void gameOver(){
-	while(1){
+
+		totalGameTime();
 		LCD_Clear(0,LCD_COLOR_BLACK);
 //		HAL_Delay(200);
 		LCD_SetTextColor(LCD_COLOR_RED);
 		LCD_SetFont(&Font16x24);
 
-		LCD_DisplayChar(95,120,'G');
+		LCD_DisplayChar(95,80,'G');
 //		HAL_Delay(200);
-		LCD_DisplayChar(111,120,'a');
+		LCD_DisplayChar(111,80,'a');
 //		HAL_Delay(200);
-		LCD_DisplayChar(125,120,'m');
+		LCD_DisplayChar(125,80,'m');
 //		HAL_Delay(200);
-		LCD_DisplayChar(140,120,'e');
+		LCD_DisplayChar(140,80,'e');
 //		HAL_Delay(200);
 //
-		LCD_DisplayChar(92,145,'O');
+		LCD_DisplayChar(92,105,'O');
 //		HAL_Delay(200);
-		LCD_DisplayChar(107,145,'v');
+		LCD_DisplayChar(107,105,'v');
 //		HAL_Delay(200);
-		LCD_DisplayChar(118,145,'e');
+		LCD_DisplayChar(118,105,'e');
 //		HAL_Delay(200);
-		LCD_DisplayChar(129,145,'r');
+		LCD_DisplayChar(129,105,'r');
 //		HAL_Delay(200);
-		LCD_DisplayChar(135,145,'!');
+		LCD_DisplayChar(135,105,'!');
 //		HAL_Delay(200);
-		LCD_DisplayChar(140,145,'!');
+		LCD_DisplayChar(140,105,'!');
 //		HAL_Delay(200);
-		LCD_DisplayChar(145,145,'!');
+		LCD_DisplayChar(145,105,'!');
+
+
+		LCD_DisplayChar(95,130,'G');
+//		HAL_Delay(200);
+		LCD_DisplayChar(111,130,'a');
+//		HAL_Delay(200);
+		LCD_DisplayChar(125,130,'m');
+//		HAL_Delay(200);
+		LCD_DisplayChar(140,130,'e');
+//		HAL_Delay(200);
+//
+		LCD_DisplayChar(92,155,'T');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,155,'i');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,155,'m');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,155,'e');
+//		HAL_Delay(200);
+		LCD_DisplayChar(135,155,':');
+//		HAL_Delay(200);
+		LCD_DisplayChar(90,180,(finalGameTime[0] + '0'));
+//		HAL_Delay(200);
+		LCD_DisplayChar(105,180,':');
+//		HAL_Delay(200);
+		LCD_DisplayChar(115,180,(finalGameTime[1] + '0'));
+//		HAL_Delay(200);
+		LCD_DisplayChar(130,180,(finalGameTime[2] + '0'));
 
 
 		HAL_Delay(1000);
+}
+
+void totalGameTime(){
+	uint16_t endGameTime = gameTime;
+	if (endGameTime < 60){
+		int firstDigit = 0;
+		finalGameTime[0] = firstDigit;
+
+		int secondDigit = (int)endGameTime;
+		secondDigit = secondDigit/10;
+		finalGameTime[1] = secondDigit;
+
+		int thirdDigit = (int)endGameTime;
+		thirdDigit = thirdDigit % 10;
+		finalGameTime[2] = thirdDigit;
 	}
+
+	else if (endGameTime >= 60){
+		uint16_t firstDigit = endGameTime;
+		firstDigit = firstDigit/60;
+		finalGameTime[0] = firstDigit;
+
+		int secondDigit = endGameTime-(firstDigit*60);
+		int thirdDigit = secondDigit;
+
+		secondDigit = secondDigit/10;
+		finalGameTime[1] = secondDigit;
+
+		thirdDigit = thirdDigit % 10;
+		finalGameTime[2] = thirdDigit;
+	}
+
 }
 
 void drawBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
@@ -1725,6 +1786,10 @@ int isFull(){
 	return 1;
 }
 
+void addSecond(){
+	gameTime += 1;
+}
+
 int updateTop(){
 //	uint16_t BlockNum = CurrentBlock[0];
 //	uint16_t Xpos = CurrentBlock[1];
@@ -1770,6 +1835,7 @@ void checkForTetris(int Highest_Row){
 			}
 			else if (LCD_Screen[14][j] != 1){
 				rowComplete = 0;
+				consecutive = 0;
 				break;
 			}
 		}
@@ -1784,7 +1850,7 @@ void checkForTetris(int Highest_Row){
 			else if (consecutive == 0){
 				shiftRowDown();
 				count += 1;
-				consecutive == 1;
+				consecutive = 1;
 			}
 		}
 		else if(rowComplete == 0){
@@ -1803,6 +1869,7 @@ void checkForTetris(int Highest_Row){
 				}
 			}
 		}
+}
 }
 
 void shiftRowDown(){
