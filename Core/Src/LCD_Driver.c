@@ -507,56 +507,115 @@ void gameOver(){
 		LCD_SetTextColor(LCD_COLOR_RED);
 		LCD_SetFont(&Font16x24);
 
-		LCD_DisplayChar(95,80,'G');
+		LCD_DisplayChar(95,20,'G');
 //		HAL_Delay(200);
-		LCD_DisplayChar(111,80,'a');
+		LCD_DisplayChar(111,20,'a');
 //		HAL_Delay(200);
-		LCD_DisplayChar(125,80,'m');
+		LCD_DisplayChar(125,20,'m');
 //		HAL_Delay(200);
-		LCD_DisplayChar(140,80,'e');
-//		HAL_Delay(200);
-//
-		LCD_DisplayChar(92,105,'O');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,105,'v');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,105,'e');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,105,'r');
-//		HAL_Delay(200);
-		LCD_DisplayChar(135,105,'!');
-//		HAL_Delay(200);
-		LCD_DisplayChar(140,105,'!');
-//		HAL_Delay(200);
-		LCD_DisplayChar(145,105,'!');
-
-
-		LCD_DisplayChar(95,130,'G');
-//		HAL_Delay(200);
-		LCD_DisplayChar(111,130,'a');
-//		HAL_Delay(200);
-		LCD_DisplayChar(125,130,'m');
-//		HAL_Delay(200);
-		LCD_DisplayChar(140,130,'e');
+		LCD_DisplayChar(140,20,'e');
 //		HAL_Delay(200);
 //
-		LCD_DisplayChar(92,155,'T');
+		LCD_DisplayChar(92,45,'O');
 //		HAL_Delay(200);
-		LCD_DisplayChar(107,155,'i');
+		LCD_DisplayChar(107,45,'v');
 //		HAL_Delay(200);
-		LCD_DisplayChar(118,155,'m');
+		LCD_DisplayChar(118,45,'e');
 //		HAL_Delay(200);
-		LCD_DisplayChar(129,155,'e');
+		LCD_DisplayChar(129,45,'r');
 //		HAL_Delay(200);
-		LCD_DisplayChar(135,155,':');
+		LCD_DisplayChar(135,45,'!');
 //		HAL_Delay(200);
-		LCD_DisplayChar(90,180,(finalGameTime[0] + '0'));
+		LCD_DisplayChar(140,45,'!');
 //		HAL_Delay(200);
-		LCD_DisplayChar(105,180,':');
+		LCD_DisplayChar(145,45,'!');
+
+
+		LCD_DisplayChar(95,70,'G');
 //		HAL_Delay(200);
-		LCD_DisplayChar(115,180,(finalGameTime[1] + '0'));
+		LCD_DisplayChar(111,70,'a');
 //		HAL_Delay(200);
-		LCD_DisplayChar(130,180,(finalGameTime[2] + '0'));
+		LCD_DisplayChar(125,70,'m');
+//		HAL_Delay(200);
+		LCD_DisplayChar(140,70,'e');
+//		HAL_Delay(200);
+//
+		LCD_DisplayChar(92,95,'T');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,95,'i');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,95,'m');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,95,'e');
+//		HAL_Delay(200);
+		LCD_DisplayChar(135,95,':');
+//		HAL_Delay(200);
+		LCD_DisplayChar(90,120,(finalGameTime[0] + '0'));
+//		HAL_Delay(200);
+		LCD_DisplayChar(105,120,':');
+//		HAL_Delay(200);
+		LCD_DisplayChar(115,120,(finalGameTime[1] + '0'));
+//		HAL_Delay(200);
+		LCD_DisplayChar(130,120,(finalGameTime[2] + '0'));
+
+		LCD_DisplayChar(92,145,'S');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,145,'i');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,145,'n');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,145,'g');
+//		HAL_Delay(200);
+		LCD_DisplayChar(141,145,'l');
+//		HAL_Delay(200);
+		LCD_DisplayChar(151,145,'e');
+		LCD_DisplayChar(163,145,':');
+		LCD_DisplayChar(173,145,(result[1] + '0'));
+
+		LCD_DisplayChar(92,170,'D');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,170,'o');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,170,'u');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,170,'b');
+//		HAL_Delay(200);
+		LCD_DisplayChar(141,170,'l');
+//		HAL_Delay(200);
+		LCD_DisplayChar(151,170,'e');
+		LCD_DisplayChar(163,170,':');
+		LCD_DisplayChar(173,170,(result[2] + '0'));
+
+		LCD_DisplayChar(92,195,'T');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,195,'r');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,195,'i');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,195,'p');
+//		HAL_Delay(200);
+		LCD_DisplayChar(141,195,'l');
+//		HAL_Delay(200);
+		LCD_DisplayChar(151,195,'e');
+		LCD_DisplayChar(163,195,':');
+		LCD_DisplayChar(173,195,(result[3] + '0'));
+
+		LCD_DisplayChar(92,220,'T');
+//		HAL_Delay(200);
+		LCD_DisplayChar(107,220,'e');
+//		HAL_Delay(200);
+		LCD_DisplayChar(118,220,'t');
+//		HAL_Delay(200);
+		LCD_DisplayChar(129,220,'r');
+//		HAL_Delay(200);
+		LCD_DisplayChar(141,220,'i');
+//		HAL_Delay(200);
+		LCD_DisplayChar(151,220,'s');
+		LCD_DisplayChar(163,220,':');
+		LCD_DisplayChar(173,220,(result[4] + '0'));
+
+
+
 
 
 		HAL_Delay(1000);
@@ -1813,13 +1872,11 @@ int updateTop(){
 }
 
 void checkForTetris(int Highest_Row){
-	int singleLine = result[1];
-	int doubleLine = result[2];
-	int tripleLine = result[3];
-	int fullTetris = result[4];
 	int rowComplete = 0;
 	int consecutive = 0;
 	int count = 0;
+	int completeRows[4] = {0};
+	int arrCount = 0;
 
 //	int Highest_Row = 14;
 //		for (int i = 0; i < 12; i++){
@@ -1833,22 +1890,24 @@ void checkForTetris(int Highest_Row){
 			if (LCD_Screen[i][j] == 1){
 				 rowComplete = 1;
 			}
-			else if (LCD_Screen[14][j] != 1){
+			else if (LCD_Screen[i][j] != 1){
 				rowComplete = 0;
-				consecutive = 0;
+//				consecutive = 0;
 				break;
 			}
 		}
 
 		if (rowComplete == 1)
 		{
+			completeRows[arrCount] = i;
+			arrCount += 1;
 			if (consecutive == 1)
 			{
-				shiftRowDown();
+//				shiftRowDown(rowNum);
 				count += 1;
 			}
 			else if (consecutive == 0){
-				shiftRowDown();
+//				shiftRowDown(rowNum);
 				count += 1;
 				consecutive = 1;
 			}
@@ -1856,23 +1915,30 @@ void checkForTetris(int Highest_Row){
 		else if(rowComplete == 0){
 			if (consecutive == 1){
 				if (count == 1){
-					singleLine += 1;
+					result[1] += 1;
 				}
 				if (count == 2){
-					doubleLine += 1;
+					result[2] += 1;
 				}
 				if (count == 3){
-					tripleLine += 1;
+					result[3] += 1;
 				}
 				if (count == 4){
-					fullTetris += 1;
+					result[4] += 1;
 				}
+				consecutive = 0;
 			}
 		}
 }
+	int shiftedCount = 0;
+	for (int k = 0; k < arrCount; k++){
+		shiftRowDown((completeRows[k]+shiftedCount));
+		shiftedCount += 1;
+	}
+
 }
 
-void shiftRowDown(){
+void shiftRowDown(int rowNum){
 	int Highest_Row = 14;
 	for (int i = 0; i < 12; i++){
 		if (topRow[i] < Highest_Row){
@@ -1880,7 +1946,7 @@ void shiftRowDown(){
 		}
 	}
 
-	for (int j = 14; j >= Highest_Row; j--){
+	for (int j = rowNum; j >= Highest_Row; j--){
 		for (int k = 0; k < 12; k++){
 			uint16_t Above_Value = LCD_Screen[j-1][k];
 			if (Above_Value == LCD_COLOR_BLACK){

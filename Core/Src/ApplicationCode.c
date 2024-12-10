@@ -83,11 +83,11 @@ void TIM3_IRQHandler() {
 			if (full == 0){
 				int top_row = updateTop();
 //				uint16_t currentYpos = getCurrentYpos();
-				if (top_row <= 1){
+				if (top_row < 1){
 //					HAL_NVIC_DisableIRQ(TIM3_IRQn);
 					gameOver();
 				}
-				if (top_row > 1) {
+				if (top_row > 0) {
 					checkForTetris(top_row);
 					uint32_t randBlock = GetRandomBlock();
 					updateCurrentBlock(randBlock, 5, 1, 1);

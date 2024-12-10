@@ -114,7 +114,7 @@ int updateTop();
 
 void checkForTetris();
 
-void shiftRowDown();
+void shiftRowDown(int rowNum);
 void moveBlockDown();
 void moveBlockLeft();
 void moveBlockRight();
