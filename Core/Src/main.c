@@ -19,9 +19,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <ApplicationCode.h>
 #include <main.h>
-#include <Scheduler.h>
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);

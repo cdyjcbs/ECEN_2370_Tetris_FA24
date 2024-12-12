@@ -16,7 +16,6 @@
 #include <stmpe811.h>
 #include <RNG.h>
 #include <Timer_Driver.h>
-#include "stm32f4xx_hal.h"
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
 #define TOUCH_INTERRUPT_ENABLED COMPILE_TOUCH_INTERRUPT_SUPPORT
