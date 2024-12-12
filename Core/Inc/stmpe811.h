@@ -12,8 +12,6 @@
 #include <stdbool.h>
 #include "stm32f4xx_hal.h"
 
-#include <I2C3.h>
-
 #define COMPILE_TOUCH  1
 #define COMPILE_TOUCH_INTERRUPT_SUPPORT    1
 

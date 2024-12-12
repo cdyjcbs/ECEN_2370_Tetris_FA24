@@ -33,7 +33,7 @@ Core/Src/LCD_Driver.o: ../Core/Src/LCD_Driver.c ../Core/Inc/LCD_Driver.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Core/Inc/stmpe811.h ../Core/Inc/I2C3.h
+ ../Core/Inc/stmpe811.h ../Core/Inc/RNG.h ../Core/Inc/Timer_Driver.h
 ../Core/Inc/LCD_Driver.h:
 ../Core/Inc/fonts.h:
 ../Core/Inc/ili9341.h:
@@ -71,4 +71,5 @@ Core/Src/LCD_Driver.o: ../Core/Src/LCD_Driver.c ../Core/Inc/LCD_Driver.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Core/Inc/stmpe811.h:
-../Core/Inc/I2C3.h:
+../Core/Inc/RNG.h:
+../Core/Inc/Timer_Driver.h:

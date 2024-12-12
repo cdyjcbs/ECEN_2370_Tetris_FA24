@@ -3,7 +3,8 @@
  *
  *  Created on: November 12, 2024
  *      Author: Cody Jacobs
- *      Lab 5 - Button Driver Header
+ *      Tetris - Button Driver Header
+ *      Date: 12/11/2024
  */
 
 #ifndef BUTTON_DRIVER_H_
@@ -12,8 +13,6 @@
 #include <stdbool.h>
 #include <InterruptControl.h>
 
-
-// PA0 = GPIOA Pin 0
 #define USER_BUTTON_PORT GPIOA
 #define USER_BUTTON_PIN	0
 #define USER_BUTTON_PRESSED 1

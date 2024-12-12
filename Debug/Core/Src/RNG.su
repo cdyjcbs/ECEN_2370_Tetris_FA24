@@ -1,3 +1,3 @@
-../Core/Src/RNG.c:12:6:RNG_Init	16	static
-../Core/Src/RNG.c:20:10:GetRandomBlock	16	static
-../Core/Src/RNG.c:27:10:GetRandomOrientation	16	static
+../Core/Src/RNG.c:15:6:RNG_Init	16	static
+../Core/Src/RNG.c:24:10:GetRandomBlock	16	static
+../Core/Src/RNG.c:32:10:GetRandomOrientation	16	static

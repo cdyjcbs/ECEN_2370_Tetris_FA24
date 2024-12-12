@@ -3,6 +3,9 @@
  *
  *  Created on: Sep 28, 2023
  *      Author: Xavion
+ *      Modified by: Cody Jacobs
+ *      Tetris - Button Driver Source
+ *		Date: 12/11/2024
  */
 
 #include <LCD_Driver.h>
@@ -240,6 +243,7 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
     }
 }
 
+// Modification of Draw_Circle_Fill to make Squares instead
 void LCD_Draw_Square_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t size, uint16_t color)
 {
     for(int16_t i=1; i<=size; i++)
@@ -251,6 +255,7 @@ void LCD_Draw_Square_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t size, uint16_t 
     }
 }
 
+// Modification of Draw_Square_Fill to include a black border
 void LCD_Draw_Square_Fill_Border(uint16_t Xpos, uint16_t Ypos, uint16_t color)
 {
 	uint16_t x = Xpos*blockSize;
@@ -277,6 +282,7 @@ void LCD_Draw_Square_Fill_Border(uint16_t Xpos, uint16_t Ypos, uint16_t color)
 	    }
 }
 
+// Erase drawn squares by re-drawing them and their borders as the color of the screen
 void LCD_Erase_Square(uint16_t Xpos, uint16_t Ypos)
 {
 	uint16_t x = Xpos*blockSize;
@@ -412,58 +418,86 @@ void visualDemo(void)
 //	blockOne();
 }
 
+// Function to draw Welcome Screen
 void GameInit(void)
 {
-//	uint16_t x;
-//	uint16_t y;
-//	uint16_t size = 10;
 
+	// Initialize topRow to the bottom row
 	for (int i = 0; i < 12; i++){
 		topRow[i] = 15;
 	}
 
+	// Initialize the Obj_Color array to the GameScreenColor
 	for (int j = 0; j < 16; j++){
 		for (int k = 0; k < 12; k++){
 			Obj_Color[j][k] = GameScreenColor;
 		}
 	}
+
+	// Write welcome message in middle of screen
 	LCD_Clear(0,GameScreenColor);
-	LCD_SetTextColor(LCD_COLOR_WHITE);
+	LCD_SetTextColor(LCD_COLOR_BLACK);
 	LCD_SetFont(&Font16x24);
 
-	LCD_DisplayChar(80,140,'W');
-	LCD_DisplayChar(94,140,'e');
-	LCD_DisplayChar(104,140,'l');
-	LCD_DisplayChar(112,140,'c');
-	LCD_DisplayChar(124,140,'o');
-	LCD_DisplayChar(140,140,'m');
-	LCD_DisplayChar(155,140,'e');
+	LCD_DisplayChar(80,130,'W');
+	LCD_DisplayChar(94,130,'e');
+	LCD_DisplayChar(104,130,'l');
+	LCD_DisplayChar(112,130,'c');
+	LCD_DisplayChar(124,130,'o');
+	LCD_DisplayChar(140,130,'m');
+	LCD_DisplayChar(155,130,'e');
 
-	LCD_DisplayChar(110,165,'t');
-	LCD_DisplayChar(120,165,'o');
+	LCD_DisplayChar(110,155,'t');
+	LCD_DisplayChar(120,155,'o');
 
-	LCD_DisplayChar(95,190,'T');
-	LCD_DisplayChar(105,190,'e');
-	LCD_DisplayChar(115,190,'t');
-	LCD_DisplayChar(125,190,'r');
-	LCD_DisplayChar(132,190,'i');
-	LCD_DisplayChar(139,190,'s');
+	LCD_DisplayChar(95,180,'T');
+	LCD_DisplayChar(105,180,'e');
+	LCD_DisplayChar(115,180,'t');
+	LCD_DisplayChar(125,180,'r');
+	LCD_DisplayChar(132,180,'i');
+	LCD_DisplayChar(139,180,'s');
 
+	// Display blocks on size 10 at top of Welcome Screen
 	blockSize = 10;
 	drawBlockOne(4.5,2.5,1);
-//	blockOneH(45,25,10,LCD_COLOR_CYAN);
 	drawBlockTwo(9.5,2.5,1);
-//	blockTwo(95,25,10,LCD_COLOR_BLUE);
 	drawBlockThree(13.5,2.5,1);
-//	blockThree(135,25,10,LCD_COLOR_ORANGE);
 	drawBlockFour(17.5,2.5,1);
-//	blockFour(175,25,10,LCD_COLOR_YELLOW);
 	drawBlockFive(6.5,5.5,1);
-//	blockFive(65,55,10,LCD_COLOR_GREEN);
-	drawBlockSix(11.5,5.5,1);
-//	blockSix(105,55,10,LCD_COLOR_MAGENTA);
-	drawBlockSeven(15.5,5.5,1);
-//	blockSeven(155,55,10,LCD_COLOR_RED);
+	drawBlockSix(10.5,5.5,1);
+	drawBlockSeven(14.5,5.5,1);
+
+	// Display START message at bottom of screen
+	LCD_DisplayChar(50,270,'T');
+	LCD_DisplayChar(62,270,'o');
+	LCD_DisplayChar(74,270,'u');
+	LCD_DisplayChar(86,270,'c');
+	LCD_DisplayChar(97,270,'h');
+
+	LCD_DisplayChar(117,270,'s');
+	LCD_DisplayChar(128,270,'c');
+	LCD_DisplayChar(139,270,'r');
+	LCD_DisplayChar(148,270,'e');
+	LCD_DisplayChar(160,270,'e');
+	LCD_DisplayChar(172,270,'n');
+
+	LCD_DisplayChar(40,295,'t');
+	LCD_DisplayChar(50,295,'o');
+
+	LCD_DisplayChar(72,295,'S');
+	LCD_DisplayChar(87,295,'T');
+	LCD_DisplayChar(101,295,'A');
+	LCD_DisplayChar(117,295,'R');
+	LCD_DisplayChar(132,295,'T');
+
+	LCD_DisplayChar(149,295,'g');
+	LCD_DisplayChar(161,295,'a');
+	LCD_DisplayChar(175,295,'m');
+	LCD_DisplayChar(189,295,'e');
+}
+
+// Function to draw game screen and first block
+void gameStart(){
 	screenReset();
 	HAL_Delay(1000);
 
@@ -473,154 +507,96 @@ void GameInit(void)
 	LCD_SetFont(&Font16x24);
 
 	drawBottomBorder();
-	updateCurrentBlock(7, 4, 2, 1);
-	drawCurrentBlock();
+	uint32_t randBlock = GetRandomBlock();
+	updateCurrentBlock(randBlock, 5, 1, 1);	drawCurrentBlock();
 	HAL_Delay(100);
 }
 
-void gameStart(){
-	LCD_Clear(0,GameScreenColor);
-	LCD_SetTextColor(LCD_COLOR_WHITE);
-	LCD_SetFont(&Font16x24);
-
-	blockSize = 20;
-	drawBottomBorder();
-	updateCurrentBlock(1, 4, 2, 1);
-	drawCurrentBlock();
-	HAL_Delay(1000);
-}
-
+// Function to reset Obj_Color array to GameScreenColor and LCD_Screen array to 0
 void screenReset(){
 	for (uint16_t i = 0; i < 16; i++){
 		for (uint16_t j = 0; j < 12; j++){
-			Obj_Color[i][j] = 0;
-			LCD_Screen[i][j] = GameScreenColor;
+			Obj_Color[i][j] = GameScreenColor;
+			LCD_Screen[i][j] = 0;
 		}
 	}
 }
 
+// Game over screen displaying game time and lines cleared
 void gameOver(){
-
 		totalGameTime();
 		LCD_Clear(0,LCD_COLOR_BLACK);
-//		HAL_Delay(200);
 		LCD_SetTextColor(LCD_COLOR_RED);
 		LCD_SetFont(&Font16x24);
 
-		LCD_DisplayChar(95,20,'G');
-//		HAL_Delay(200);
-		LCD_DisplayChar(111,20,'a');
-//		HAL_Delay(200);
-		LCD_DisplayChar(125,20,'m');
-//		HAL_Delay(200);
-		LCD_DisplayChar(140,20,'e');
-//		HAL_Delay(200);
-//
-		LCD_DisplayChar(92,45,'O');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,45,'v');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,45,'e');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,45,'r');
-//		HAL_Delay(200);
-		LCD_DisplayChar(135,45,'!');
-//		HAL_Delay(200);
-		LCD_DisplayChar(140,45,'!');
-//		HAL_Delay(200);
-		LCD_DisplayChar(145,45,'!');
+		LCD_DisplayChar(55,20,'G');
+		LCD_DisplayChar(71,20,'a');
+		LCD_DisplayChar(85,20,'m');
+		LCD_DisplayChar(100,20,'e');
 
+		LCD_DisplayChar(120,20,'O');
+		LCD_DisplayChar(137,20,'v');
+		LCD_DisplayChar(150,20,'e');
+		LCD_DisplayChar(160,20,'r');
+		LCD_DisplayChar(167,20,'!');
+		LCD_DisplayChar(172,20,'!');
+		LCD_DisplayChar(177,20,'!');
 
-		LCD_DisplayChar(95,70,'G');
-//		HAL_Delay(200);
-		LCD_DisplayChar(111,70,'a');
-//		HAL_Delay(200);
-		LCD_DisplayChar(125,70,'m');
-//		HAL_Delay(200);
-		LCD_DisplayChar(140,70,'e');
-//		HAL_Delay(200);
-//
-		LCD_DisplayChar(92,95,'T');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,95,'i');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,95,'m');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,95,'e');
-//		HAL_Delay(200);
-		LCD_DisplayChar(135,95,':');
-//		HAL_Delay(200);
-		LCD_DisplayChar(90,120,(finalGameTime[0] + '0'));
-//		HAL_Delay(200);
-		LCD_DisplayChar(105,120,':');
-//		HAL_Delay(200);
-		LCD_DisplayChar(115,120,(finalGameTime[1] + '0'));
-//		HAL_Delay(200);
-		LCD_DisplayChar(130,120,(finalGameTime[2] + '0'));
+		LCD_DisplayChar(55,50,'G');
+		LCD_DisplayChar(71,50,'a');
+		LCD_DisplayChar(85,50,'m');
+		LCD_DisplayChar(100,50,'e');
 
-		LCD_DisplayChar(92,145,'S');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,145,'i');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,145,'n');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,145,'g');
-//		HAL_Delay(200);
-		LCD_DisplayChar(141,145,'l');
-//		HAL_Delay(200);
-		LCD_DisplayChar(151,145,'e');
-		LCD_DisplayChar(163,145,':');
-		LCD_DisplayChar(173,145,(result[1] + '0'));
+		LCD_DisplayChar(120,50,'T');
+		LCD_DisplayChar(132,50,'i');
+		LCD_DisplayChar(142,50,'m');
+		LCD_DisplayChar(157,50,'e');
+		LCD_DisplayChar(167,50,':');
 
-		LCD_DisplayChar(92,170,'D');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,170,'o');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,170,'u');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,170,'b');
-//		HAL_Delay(200);
-		LCD_DisplayChar(141,170,'l');
-//		HAL_Delay(200);
-		LCD_DisplayChar(151,170,'e');
-		LCD_DisplayChar(163,170,':');
-		LCD_DisplayChar(173,170,(result[2] + '0'));
+		LCD_DisplayChar(95,80,(finalGameTime[0] + '0'));
+		LCD_DisplayChar(105,80,':');
+		LCD_DisplayChar(115,80,(finalGameTime[1] + '0'));
+		LCD_DisplayChar(128,80,(finalGameTime[2] + '0'));
 
-		LCD_DisplayChar(92,195,'T');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,195,'r');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,195,'i');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,195,'p');
-//		HAL_Delay(200);
-		LCD_DisplayChar(141,195,'l');
-//		HAL_Delay(200);
-		LCD_DisplayChar(151,195,'e');
-		LCD_DisplayChar(163,195,':');
-		LCD_DisplayChar(173,195,(result[3] + '0'));
+		LCD_DisplayChar(82,145,'S');
+		LCD_DisplayChar(97,145,'i');
+		LCD_DisplayChar(108,145,'n');
+		LCD_DisplayChar(121,145,'g');
+		LCD_DisplayChar(131,145,'l');
+		LCD_DisplayChar(141,145,'e');
+		LCD_DisplayChar(151,145,':');
+		LCD_DisplayChar(163,146,(result[1] + '0'));
 
-		LCD_DisplayChar(92,220,'T');
-//		HAL_Delay(200);
-		LCD_DisplayChar(107,220,'e');
-//		HAL_Delay(200);
-		LCD_DisplayChar(118,220,'t');
-//		HAL_Delay(200);
-		LCD_DisplayChar(129,220,'r');
-//		HAL_Delay(200);
-		LCD_DisplayChar(141,220,'i');
-//		HAL_Delay(200);
-		LCD_DisplayChar(151,220,'s');
-		LCD_DisplayChar(163,220,':');
-		LCD_DisplayChar(173,220,(result[4] + '0'));
+		LCD_DisplayChar(82,170,'D');
+		LCD_DisplayChar(97,170,'o');
+		LCD_DisplayChar(108,170,'u');
+		LCD_DisplayChar(121,170,'b');
+		LCD_DisplayChar(131,170,'l');
+		LCD_DisplayChar(141,170,'e');
+		LCD_DisplayChar(151,170,':');
+		LCD_DisplayChar(163,171,(result[2] + '0'));
 
+		LCD_DisplayChar(82,195,'T');
+		LCD_DisplayChar(97,195,'r');
+		LCD_DisplayChar(108,195,'i');
+		LCD_DisplayChar(119,195,'p');
+		LCD_DisplayChar(131,195,'l');
+		LCD_DisplayChar(141,195,'e');
+		LCD_DisplayChar(151,195,':');
+		LCD_DisplayChar(163,196,(result[3] + '0'));
 
-
-
-
+		LCD_DisplayChar(82,220,'T');
+		LCD_DisplayChar(97,220,'e');
+		LCD_DisplayChar(108,220,'t');
+		LCD_DisplayChar(119,220,'r');
+		LCD_DisplayChar(131,220,'i');
+		LCD_DisplayChar(141,220,'s');
+		LCD_DisplayChar(151,220,':');
+		LCD_DisplayChar(163,221,(result[4] + '0'));
 		HAL_Delay(1000);
 }
 
+// Break total game time into minutes, 10's seconds, and 1's seconds
 void totalGameTime(){
 	uint16_t endGameTime = gameTime;
 	if (endGameTime < 60){
@@ -653,6 +629,7 @@ void totalGameTime(){
 
 }
 
+// Draw Block One at X, Y, and in given orientation
 void drawBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+4); i++){
@@ -670,6 +647,7 @@ void drawBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Erase Block One at X, Y, and in given orientation
 void eraseBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+4); i++){
@@ -687,6 +665,7 @@ void eraseBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Draw Block Two at X, Y, and in given orientation
 void drawBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -730,6 +709,7 @@ void drawBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Erase Block Two at X, Y, and in given orientation
 void eraseBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -773,6 +753,7 @@ void eraseBlockTwo(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Draw Block Three at X, Y, and in given orientation
 void drawBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -816,6 +797,7 @@ void drawBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Erase Block Three at X, Y, and in given orientation
 void eraseBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -859,6 +841,7 @@ void eraseBlockThree(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Draw Block Four at X, Y, and in given orientation
 void drawBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Draw_Square_Fill_Border(i,Ypos,LCD_COLOR_YELLOW);
@@ -870,6 +853,7 @@ void drawBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 		}
 }
 
+// Erase Block Four at X, Y, and in given orientation
 void eraseBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	for (int i = Xpos; i < (Xpos+2); i++){
 			LCD_Erase_Square(i,Ypos);
@@ -881,6 +865,7 @@ void eraseBlockFour(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 		}
 }
 
+// Draw Block Five at X, Y, and in given orientation
 void drawBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
@@ -914,6 +899,7 @@ void drawBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	//	   X-1  X  X+1  X+2
 }
 
+// Erase Block Five at X, Y, and in given orientation
 void eraseBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
@@ -937,6 +923,7 @@ void eraseBlockFive(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Draw Block Six at X, Y, and in given orientation
 void drawBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -981,6 +968,7 @@ void drawBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Erase Block Six at X, Y, and in given orientation
 void eraseBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1){
 		for (int i = Xpos; i < (Xpos+3); i++){
@@ -1025,6 +1013,7 @@ void eraseBlockSix(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Draw Block Seven at X, Y, and in given orientation
 void drawBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
@@ -1058,6 +1047,7 @@ void drawBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
+// Erase Block Seven at X, Y, and in given orientation
 void eraseBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	if (orientation == 1 || orientation == 3){
 		for (int i = Xpos; i < (Xpos+2); i++){
@@ -1081,20 +1071,7 @@ void eraseBlockSeven(uint16_t Xpos, uint16_t Ypos, uint16_t orientation){
 	}
 }
 
-void drawScreen(){
-		for (int i = 0; i < 16; i++)
-		{
-			for (int j = 0; j < 12; j++)
-			{
-				if (LCD_Screen[i][j] != 0)
-				{
-					uint16_t color = Obj_Color[i][j];
-					LCD_Draw_Square_Fill_Border(i,j,color);
-				}
-			}
-		}
-}
-
+// Draw a black bottom border at bottom of screen
 void drawBottomBorder(){
 	for (uint16_t i = 0; i < 12; i++){
 		LCD_Draw_Square_Fill_Border(i, 15, LCD_COLOR_BLACK);
@@ -1104,6 +1081,7 @@ void drawBottomBorder(){
 	HAL_Delay(1000);
 }
 
+// Erase block in current orientation and redraw in new orientation
 void rotateBlock(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1154,6 +1132,7 @@ void rotateBlock(){
 		}
 }
 
+// Function to determine if blocks are able to rotate or if there is a block already there preventing them
 int ableToRotate(){
 //	uint16_t BlockNum = CurrentBlock[0];
 //	uint16_t Xpos = CurrentBlock[1];
@@ -1171,6 +1150,7 @@ int ableToRotate(){
 	return full;
 }
 
+// Draw the block based on values in CurrentBlock array
 void drawCurrentBlock(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1200,6 +1180,7 @@ void drawCurrentBlock(){
 	}
 }
 
+// Erase the block based on values in CurrentBlock array
 void eraseCurrentBlock(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1229,6 +1210,7 @@ void eraseCurrentBlock(){
 	}
 }
 
+// Update the values in CurrentBlock array
 void updateCurrentBlock(uint16_t BlockNum, uint16_t Xpos, uint16_t Ypos, uint16_t Orientation){
 	CurrentBlock[0] = BlockNum;
 	CurrentBlock[1] = Xpos;
@@ -1236,15 +1218,18 @@ void updateCurrentBlock(uint16_t BlockNum, uint16_t Xpos, uint16_t Ypos, uint16_
 	CurrentBlock[3] = Orientation;
 }
 
+// Return current Y position of current block
 uint16_t getCurrentYpos(){
 	return CurrentBlock[2];
 }
 
+// Update the Y position of current block
 uint16_t updateYpos(){
 	CurrentBlock[2] += 1;
 	return CurrentBlock[2];
 }
 
+// Update the X position of current block
 void updateXpos(int dir){
 	if (dir == 1){
 		CurrentBlock[1] -= 1;
@@ -1254,6 +1239,7 @@ void updateXpos(int dir){
 	}
 }
 
+// Function to see if space to left of block is full
 int isLeftFull(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1434,6 +1420,7 @@ int isLeftFull(){
 	return 1;
 }
 
+// Function to determine if block can move left if left is not full & Xpos is greater than 0
 int canMoveLeft(){
 //	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1478,6 +1465,7 @@ int canMoveLeft(){
 	return 0;
 }
 
+// Function to see if space to right of block is full
 int isRightFull(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1648,6 +1636,7 @@ int isRightFull(){
 //	}
 }
 
+// Function to determine if block can move right if right is not full & Xpos is small enough depending on block
 int canMoveRight(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1706,6 +1695,7 @@ int canMoveRight(){
 	return 0;
 }
 
+// Function to check if space below block is full or if it can move down
 int isFull(){
 	uint16_t BlockNum = CurrentBlock[0];
 	uint16_t Xpos = CurrentBlock[1];
@@ -1845,10 +1835,12 @@ int isFull(){
 	return 1;
 }
 
+// Function to increase a counter for seconds
 void addSecond(){
 	gameTime += 1;
 }
 
+// Function to update the highest_row array
 int updateTop(){
 //	uint16_t BlockNum = CurrentBlock[0];
 //	uint16_t Xpos = CurrentBlock[1];
@@ -1871,6 +1863,7 @@ int updateTop(){
 	return Highest_Row;
 }
 
+// Function to check if a row is complete, and if so remove it and count how many lines have been moved
 void checkForTetris(int Highest_Row){
 	int rowComplete = 0;
 	int consecutive = 0;
@@ -1885,18 +1878,19 @@ void checkForTetris(int Highest_Row){
 //			}
 //		}
 
-	for (int i = 14; i >= Highest_Row; i--){
+	for (int i = 14; i >= (Highest_Row-1); i--){
 		for (int j = 0; j < 12; j++){
+			// Check if all elements are full
 			if (LCD_Screen[i][j] == 1){
 				 rowComplete = 1;
 			}
 			else if (LCD_Screen[i][j] != 1){
 				rowComplete = 0;
-//				consecutive = 0;
 				break;
 			}
 		}
 
+		// if there is a full row, add one to counter and check to see if consecutive
 		if (rowComplete == 1)
 		{
 			completeRows[arrCount] = i;
@@ -1912,6 +1906,7 @@ void checkForTetris(int Highest_Row){
 				consecutive = 1;
 			}
 		}
+		// Once you have an incomplete row, check the value of count and this tells you how many lines were cleared in a row
 		else if(rowComplete == 0){
 			if (consecutive == 1){
 				if (count == 1){
@@ -1927,9 +1922,11 @@ void checkForTetris(int Highest_Row){
 					result[4] += 1;
 				}
 				consecutive = 0;
+				count = 0;
 			}
 		}
 }
+	// Erase and shift down the rows that were found to have been complete
 	int shiftedCount = 0;
 	for (int k = 0; k < arrCount; k++){
 		shiftRowDown((completeRows[k]+shiftedCount));
@@ -1938,6 +1935,7 @@ void checkForTetris(int Highest_Row){
 
 }
 
+// Once a row is complete, we erase that row and shift the remaining rows down
 void shiftRowDown(int rowNum){
 	int Highest_Row = 14;
 	for (int i = 0; i < 12; i++){
@@ -1948,13 +1946,13 @@ void shiftRowDown(int rowNum){
 
 	for (int j = rowNum; j >= Highest_Row; j--){
 		for (int k = 0; k < 12; k++){
-			uint16_t Above_Value = LCD_Screen[j-1][k];
+			uint16_t Above_Value = Obj_Color[j-1][k];
 			if (Above_Value == LCD_COLOR_BLACK){
 				Above_Value = GameScreenColor;
 			}
-			LCD_Screen[j][k] = Above_Value;
-			Obj_Color[j][k] = Obj_Color[j-1][k];
-			LCD_Draw_Square_Fill_Border(k,j,Obj_Color[j-1][k]);
+			LCD_Screen[j][k] = LCD_Screen[j-1][k];
+			Obj_Color[j][k] = Above_Value;
+			LCD_Draw_Square_Fill_Border(k,j,Above_Value);
 		}
 	}
 
@@ -1965,18 +1963,21 @@ void shiftRowDown(int rowNum){
 //	}
 }
 
+// Function to change block Ypos and move it down
 void moveBlockDown(){
 	  eraseCurrentBlock();
 	  updateYpos();
 	  drawCurrentBlock();
 }
 
+// Function to change block Xpos and move it left
 void moveBlockLeft(){
 	eraseCurrentBlock();
 	updateXpos(1);
 	drawCurrentBlock();
 }
 
+// Function to change block Xpos and move it right
 void moveBlockRight(){
 	eraseCurrentBlock();
 	updateXpos(2);

@@ -3,13 +3,14 @@
  *
  *  Created on: Dec 30, 2023 (updated 11/12/2024) Thanks Donavon! 
  *      Author: Xavion
+ *      Modified by: Cody Jacobs
+ *      Tetris - Application Code Source
+ *      Date: 12/11/2024
  */
 
 #include <ApplicationCode.h>
 
 /* Static variables */
-
-
 extern void initialise_monitor_handles(void); 
 extern TIM_HandleTypeDef TIM3_Config;
 
@@ -21,20 +22,16 @@ void LCDTouchScreenInterruptGPIOInit(void);
 #endif // TOUCH_INTERRUPT_ENABLED
 #endif // COMPILE_TOUCH_FUNCTIONS
 
+bool firstTouch = false;
+
 void ApplicationInit(void)
 {
 	initialise_monitor_handles(); // Allows printf functionality
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
+    // Draw welcome screen and await input to start game
     GameInit();
-//    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-    buttonIRQInit();
-    RNG_Init();
-//    gameStart();
-    timer3Init();
-    timer5Init();
-
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
@@ -55,48 +52,54 @@ void LCD_Visual_Demo(void)
 	visualDemo();
 }
 
-void TIM_App_Start(){
+// Initialize Button for IRQ, RNG, and Timers 3 and 5, then start both timers.
+void Periph_Init(){
+	buttonIRQInit();
+	RNG_Init();
+	timer3Init();
+	timer5Init();
 	TIM3_Start();
 	TIM5_Start();
 }
 
+// IRQ Handler for User Button to Rotate Blocks
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-//	int rotatable = ableToRotate();
-//	if (rotatable == 1){
-		addSchedulerEvent(ROTATE_BLOCK);
-//	}
+	addSchedulerEvent(ROTATE_BLOCK);
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
+// IRQ Handler for Timer 3 to drop blocks or end game
 void TIM3_IRQHandler() {
 	 if (__HAL_TIM_GET_FLAG(&TIM3_Config, TIM_FLAG_UPDATE)) {
 	        // Clear the update interrupt flag
 	        __HAL_TIM_CLEAR_FLAG(&TIM3_Config, TIM_FLAG_UPDATE);
+
+	        // Check if area below block is open or full with another block
 	        int full = isFull();
 
+	        // If it is not full, then schedule block to drop
 	        if (full != 0){
 	        	addSchedulerEvent(DROP_BLOCK);
 	        }
 
+	        // Update the top row and if top row is at top of screen Game Over
 			if (full == 0){
 				int top_row = updateTop();
-//				uint16_t currentYpos = getCurrentYpos();
-				if (top_row < 1){
-//					HAL_NVIC_DisableIRQ(TIM3_IRQn);
+				if (top_row <= 1){
 					gameOver();
 				}
-				if (top_row > 0) {
+				// If top row is not at top of screen, schedule new block to fall
+				else if (top_row > 1) {
 					checkForTetris(top_row);
-					uint32_t randBlock = GetRandomBlock();
-					updateCurrentBlock(randBlock, 5, 1, 1);
-					drawCurrentBlock();
+					addSchedulerEvent(NEW_BLOCK);
 				}
 			}
 	 }
 }
 
+// IRQ Handler for Timer 5 to act as game timer
 void TIM5_IRQHandler(){
 	 if (__HAL_TIM_GET_FLAG(&TIM5_Config, TIM_FLAG_UPDATE)) {
 		 // Clear the update interrupt flag
@@ -139,26 +142,29 @@ void LCD_Touch_Polling_Demo(void)
 void LCD_Touch_Polling(void)
 {
 //	int h = 0;
-	while (1) {
+	while (firstTouch == false) {
 		/* If touch pressed */
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 						/* Touch valid */
-						if (StaticTouchData.x < 120) {
-							int canMove = canMoveLeft();
-							if (canMove == 1){
-								eraseCurrentBlock();
-								updateXpos(1);
-								drawCurrentBlock();
-							}
-						}
-						if (StaticTouchData.x >= 120){
-							eraseCurrentBlock();
-							updateXpos(2);
-							drawCurrentBlock();
-						}
+
+			addSchedulerEvent(GAME_START);
+				firstTouch = true;
+		}
+//						if (StaticTouchData.x < 120) {
+//							int canMove = canMoveLeft();
+//							if (canMove == 1){
+//								eraseCurrentBlock();
+//								updateXpos(1);
+//								drawCurrentBlock();
+//							}
+//						}
+//						if (StaticTouchData.x >= 120){
+//							eraseCurrentBlock();
+//							updateXpos(2);
+//							drawCurrentBlock();
+//						}
 //			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
 //			moveBlock(StaticTouchData.x, StaticTouchData.y, h);
-		}
 	}
 }
 
@@ -192,6 +198,7 @@ void LCDTouchScreenInterruptGPIOInit(void)
 
 static uint8_t statusFlag;
 
+// IRQ Handler for the Touch Screen
 void EXTI15_10_IRQHandler()
 {
 	HAL_NVIC_DisableIRQ(EXTI15_10_IRQn); // May consider making this a universial interrupt guard
@@ -209,46 +216,42 @@ void EXTI15_10_IRQHandler()
 		count = STMPE811_Read(STMPE811_FIFO_SIZE);
 	}
 
-	// Disable touch interrupt bit on the STMPE811
-	uint8_t currentIRQEnables = ReadRegisterFromTouchModule(STMPE811_INT_EN);
-	WriteDataToTouchModule(STMPE811_INT_EN, 0x00);
-
-	// Clear the interrupt bit in the STMPE811
-	statusFlag = ReadRegisterFromTouchModule(STMPE811_INT_STA);
-	uint8_t clearIRQData = (statusFlag | TOUCH_DETECTED_IRQ_STATUS_BIT); // Write one to clear bit
-	WriteDataToTouchModule(STMPE811_INT_STA, clearIRQData);
-	
-//	uint8_t ctrlReg = ReadRegisterFromTouchModule(STMPE811_TSC_CTRL);
-//	if (ctrlReg & 0x80)
-//	{
-//		isTouchDetected = true;
-//	}
-
 	// Determine if it is pressed or unpressed
 	if(isTouchDetected) // Touch has been detected
 	{
-		printf("\nPressed");
-		// May need to do numerous retries? 
-		DetermineTouchPosition(&StaticTouchData);
-		/* Touch valid */
-		if (StaticTouchData.x < 120) {
-			int  moveLeft = canMoveLeft();
-			if (moveLeft == 1){
+		// If it is the first touch, then this will trigger Game to Start
+		if (!firstTouch){
+			addSchedulerEvent(GAME_START);
+			firstTouch = true;
+		}
+
+		// Subsequent touches will schedule the block to move left or right depending on touch position
+		else {
+			printf("\nPressed");
+			DetermineTouchPosition(&StaticTouchData);
+
+			/* Touch valid */
+			if (StaticTouchData.x < 120 && canMoveLeft()) {
 				addSchedulerEvent(MOVE_LEFT);
 			}
-		}
-		else if (StaticTouchData.x >= 120){
-			int moveRight = canMoveRight();
-			if (moveRight == 1){
+			else if (StaticTouchData.x >= 120 && canMoveRight()){
 				addSchedulerEvent(MOVE_RIGHT);
 			}
 		}
-
-	}else{
-		/* Touch not pressed */
-//		printf("\nNot pressed \n");
-//		LCD_Clear(0, LCD_COLOR_GREEN);
 	}
+	else{
+		/* Touch not pressed */
+		printf("\nNot pressed \n");
+	}
+
+// Disable touch interrupt bit on the STMPE811
+	uint8_t currentIRQEnables = ReadRegisterFromTouchModule(STMPE811_INT_EN);
+	WriteDataToTouchModule(STMPE811_INT_EN, 0x00);
+
+// Clear the interrupt bit in the STMPE811
+	statusFlag = ReadRegisterFromTouchModule(STMPE811_INT_STA);
+	uint8_t clearIRQData = (statusFlag | TOUCH_DETECTED_IRQ_STATUS_BIT); // Write one to clear bit
+	WriteDataToTouchModule(STMPE811_INT_STA, clearIRQData);
 
 	STMPE811_Write(STMPE811_FIFO_STA, 0x01);
 	STMPE811_Write(STMPE811_FIFO_STA, 0x00);
@@ -259,11 +262,6 @@ void EXTI15_10_IRQHandler()
 
 	HAL_NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-
-	//Potential ERRATA? Clearing IRQ bit again due to an IRQ being triggered DURING the handling of this IRQ..
-	WriteDataToTouchModule(STMPE811_INT_STA, clearIRQData);
-
 }
 #endif // TOUCH_INTERRUPT_ENABLED
 #endif // COMPILE_TOUCH_FUNCTIONS
-

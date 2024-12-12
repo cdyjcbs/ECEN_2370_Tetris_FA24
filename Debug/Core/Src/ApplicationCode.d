@@ -34,10 +34,10 @@ Core/Src/ApplicationCode.o: ../Core/Src/ApplicationCode.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Core/Inc/stmpe811.h ../Core/Inc/I2C3.h ../Core/Inc/Button_Driver.h \
- ../Core/Inc/InterruptControl.h \
+ ../Core/Inc/stmpe811.h ../Core/Inc/RNG.h ../Core/Inc/Timer_Driver.h \
+ ../Core/Inc/Button_Driver.h ../Core/Inc/InterruptControl.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/STM32F4xx_hal.h \
- ../Core/Inc/Timer_Driver.h ../Core/Inc/RNG.h ../Core/Inc/Scheduler.h
+ ../Core/Inc/Scheduler.h
 ../Core/Inc/ApplicationCode.h:
 ../Core/Inc/LCD_Driver.h:
 ../Core/Inc/fonts.h:
@@ -76,10 +76,9 @@ Core/Src/ApplicationCode.o: ../Core/Src/ApplicationCode.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Core/Inc/stmpe811.h:
-../Core/Inc/I2C3.h:
+../Core/Inc/RNG.h:
+../Core/Inc/Timer_Driver.h:
 ../Core/Inc/Button_Driver.h:
 ../Core/Inc/InterruptControl.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/STM32F4xx_hal.h:
-../Core/Inc/Timer_Driver.h:
-../Core/Inc/RNG.h:
 ../Core/Inc/Scheduler.h:

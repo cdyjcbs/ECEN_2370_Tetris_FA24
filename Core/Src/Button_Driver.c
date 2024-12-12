@@ -3,22 +3,14 @@
  *
  *  Created on: November 12, 2024
  *      Author: Cody Jacobs
- *      Lab 5 - Button Driver Source
+ *      Tetris - Button Driver Source
+ *		Date: 12/11/2024
  */
 
 #include <Button_Driver.h>
 
 // Button initialization prototype
 void buttonInit(){
-//	typedef struct {
-//		uint8_t PinNumber;		// Pin Number
-//		uint8_t PinMode;		// Pin Mode
-//		uint8_t OPType;			// Output Type
-//		uint8_t PinSpeed;		// Pin Speed
-//		uint8_t PinPuPdControl;	// Pin Push up/ Pull Down Control
-//		uint8_t PinAltFunMode;	// Alternate Function Mode
-//	} Button;
-
 	GPIO_InitTypeDef pinConfig;
 	pinConfig.Pin = USER_BUTTON_PIN; //GPIO_PIN_0
 	pinConfig.Mode = GPIO_MODE_INPUT;
@@ -32,8 +24,8 @@ void buttonInit(){
 // Enable clock Prototype
 void enableClock(){
 	__HAL_RCC_GPIOA_CLK_ENABLE();
-//	GPIO_ClockControl(USER_BUTTON_PORT, 0);
 }
+
 // Button pressed Boolean
 bool buttonPressed(){
 	bool returnValue = false;

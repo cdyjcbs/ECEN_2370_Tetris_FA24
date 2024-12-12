@@ -1,6 +1,5 @@
 "./Core/Src/ApplicationCode.o"
 "./Core/Src/Button_Driver.o"
-"./Core/Src/I2C3.o"
 "./Core/Src/InterruptControl.o"
 "./Core/Src/LCD_Driver.o"
 "./Core/Src/RNG.o"

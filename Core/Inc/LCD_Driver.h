@@ -3,6 +3,9 @@
  *
  *  Created on: Sep 28, 2023
  *      Author: Xavion
+ *      Modified by: Cody Jacobs
+ *      Tetris - LCD Driver Header
+ *      Date: 12/11/2024
  */
 
 #ifndef INC_LCD_DRIVER_H_
@@ -11,6 +14,8 @@
 #include <fonts.h>
 #include <ili9341.h>
 #include <stmpe811.h>
+#include <RNG.h>
+#include <Timer_Driver.h>
 #include "stm32f4xx_hal.h"
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
@@ -80,7 +85,6 @@ void LCD_Touch_Polling(void);
 // Demo using provided functions
 void visualDemo(void);
 
-void drawScreen();
 
 void drawBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation);
 void eraseBlockOne(uint16_t Xpos, uint16_t Ypos, uint16_t orientation);
@@ -105,32 +109,24 @@ void drawCurrentBlock();
 void eraseCurrentBlock();
 void drawBottomBorder();
 uint16_t getCurrentYpos();
+void GameInit(void);
 void gameStart();
 void gameOver();
 void screenReset();
 void updateXpos(int dir);
-
 int updateTop();
 
 void checkForTetris();
-
 void shiftRowDown(int rowNum);
 void moveBlockDown();
 void moveBlockLeft();
 void moveBlockRight();
-
 int canMoveLeft();
 int canMoveRight();
-
 int ableToRotate();
-
 int isLeftFull();
-
 void totalGameTime();
-
 void addSecond();
-
-int updateTop();
 
 void LCD_Error_Handler(void);
 
@@ -141,8 +137,6 @@ void LCD_Touch_Polling_Demo(void);
 void DetermineTouchPosition(STMPE811_TouchData * touchStruct);
 uint8_t ReadRegisterFromTouchModule(uint8_t RegToRead);
 void WriteDataToTouchModule(uint8_t RegToWrite, uint8_t writeData);
-
-void GameInit(void);
 
 #endif // COMPILE_TOUCH_FUNCTIONS
 

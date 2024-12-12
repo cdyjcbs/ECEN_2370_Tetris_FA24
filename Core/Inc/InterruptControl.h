@@ -3,9 +3,9 @@
  *
  *  Created on: November 11 2024
  *      Author: Cody Jacobs
- *      Lab 5 - Interrupt Control Header
+ *		Tetris - Interrupt Control Header
+ *		Date: 12/11/2024
  */
-
 
 #include <STM32F4xx_hal.h>
 #include <stdint.h>
@@ -29,4 +29,3 @@ void setPendingIRQ(uint8_t IRQ_Num);
 void clearEXTIPendingIRQ(uint8_t Pin_Num);
 
 void EXTI0_Enable();
-

@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Main program body for Tetris Game
+  * @author			: Cody Jacobs
+  * @date			: 12/11/2024
   ******************************************************************************
   * @attention
   *
@@ -40,15 +42,10 @@ int main(void)
   // Note - You, the developer, MAY have to play with some of this coniguration as you progress in your project
   SystemClockOverride();
 
-//  I2C3_GPIO_Init();
-//  I2C3_Init();
+  ApplicationInit(); // Initializes the LCD functionality and Welcome Screen
 
-  ApplicationInit(); // Initializes the LCD functionality
-  TIM_App_Start();
 //  LCD_Visual_Demo();
-//  GameInit();
 
-//  HAL_Delay(100);
 //  LCD_Touch_Polling();
 
   // DO NOT CALL THIS FUNCTION WHEN INTERRUPT MODE IS SELECTED IN THE COMPILE SWITCH IN stmpe811.h
@@ -59,29 +56,41 @@ int main(void)
 
   for (;;)
   {
-//	  Gyro_DevID();
-    /* USER CODE END WHILE */
 	  eventsToRun = getScheduledEvents();
-	  if (eventsToRun & ROTATE_BLOCK){
+	  if (eventsToRun & GAME_START){
+		  gameStart();
+		  removeSchedulerEvent(GAME_START);
+		  InitializeLCDTouch();
+		  LCDTouchScreenInterruptGPIOInit();
+		  Periph_Init();
+	  }
+	  else if (eventsToRun & GAME_OVER){
+		  gameOver();
+	  }
+	  else if (eventsToRun & ROTATE_BLOCK){
 		  rotateBlock();
-//		  HAL_Delay(100);
 		  removeSchedulerEvent(ROTATE_BLOCK);
 	  }
-	  if (eventsToRun & DROP_BLOCK){
-		  moveBlockDown();
-		  removeSchedulerEvent(DROP_BLOCK);
-	  }
-	  if (eventsToRun & MOVE_LEFT){
+	  else if (eventsToRun & MOVE_LEFT){
 		  moveBlockLeft();
 		  removeSchedulerEvent(MOVE_LEFT);
 	  }
-	  if (eventsToRun & MOVE_RIGHT){
+	  else if (eventsToRun & MOVE_RIGHT){
 		  moveBlockRight();
 		  removeSchedulerEvent(MOVE_RIGHT);
 	  }
-	  if (eventsToRun & GAME_OVER){
-		  gameOver();
+	  else if (eventsToRun & DROP_BLOCK){
+		  moveBlockDown();
+		  removeSchedulerEvent(DROP_BLOCK);
 	  }
+	  else if (eventsToRun & NEW_BLOCK){
+		  uint32_t randBlock = GetRandomBlock();
+		  updateCurrentBlock(randBlock, 5, 1, 1);
+		  drawCurrentBlock();
+		  removeSchedulerEvent(NEW_BLOCK);
+	  }
+
+
     /* USER CODE BEGIN 3 */
   }
 
